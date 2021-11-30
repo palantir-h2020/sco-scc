@@ -1,0 +1,14 @@
+quarkus:
+  banner:
+    path: scc-banner.txt
+
+  console:
+    color: true
+
+  log:
+    console:
+      enable: true
+      # Reinstate deprecated configuration as test-containers for example still uses it
+      color: true
+      # As per https://quarkus.io/guides/opentracing#create-the-configuration
+      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
