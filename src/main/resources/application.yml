@@ -2,6 +2,13 @@ quarkus:
   banner:
     path: scc-banner.txt
 
+  jackson:
+    accept-case-insensitive-enums: true
+    timezone: "UTC"
+
+  hibernate-validator:
+    fail-fast: true
+
   console:
     color: true
 
@@ -12,3 +19,6 @@ quarkus:
       color: true
       # As per https://quarkus.io/guides/opentracing#create-the-configuration
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+
+  swagger-ui:
+    title: Security Capabilities Catalogue API
