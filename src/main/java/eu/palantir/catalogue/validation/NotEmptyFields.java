@@ -1,5 +1,6 @@
 package eu.palantir.catalogue.validation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,6 +11,7 @@ import javax.validation.Payload;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 @Constraint(validatedBy = NotEmptyFieldsValidator.class)
 public @interface NotEmptyFields {
 

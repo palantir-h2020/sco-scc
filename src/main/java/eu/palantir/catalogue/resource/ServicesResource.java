@@ -41,11 +41,11 @@ public class ServicesResource {
 
     private static final Logger LOGGER = Logger.getLogger(ServicesResource.class);
 
-    private final SecurityCapabilitySearchService searchService;
+    SecurityCapabilitySearchService searchService;
 
-    private final SecurityCapabilityService capabilityService;
+    SecurityCapabilityService capabilityService;
 
-    private final SecurityCapabilityRegistrationService registrationService;
+    SecurityCapabilityRegistrationService registrationService;
 
     @Inject
     public ServicesResource(SecurityCapabilitySearchService searchService, SecurityCapabilityService capabilityService,

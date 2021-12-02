@@ -29,8 +29,9 @@ public class RegisterSCResource {
 
     private static final Logger LOGGER = Logger.getLogger(RegisterSCResource.class);
 
-    private final SecurityCapabilityRegistrationService registrationService;
-    private final SecurityCapabilitySearchService searchService;
+    SecurityCapabilityRegistrationService registrationService;
+
+    SecurityCapabilitySearchService searchService;
 
     @Inject
     public RegisterSCResource(SecurityCapabilityRegistrationService registrationService,
