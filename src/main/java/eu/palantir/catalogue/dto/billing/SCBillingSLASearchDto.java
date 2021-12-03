@@ -3,7 +3,7 @@ package eu.palantir.catalogue.dto.billing;
 import java.util.List;
 import java.util.Objects;
 
-import eu.palantir.catalogue.dto.search.DurationRangeDto;
+import eu.palantir.catalogue.dto.search.IntRangeDto;
 import eu.palantir.catalogue.dto.search.FloatRangeDto;
 import eu.palantir.catalogue.model.billing.BillingModelType;
 import eu.palantir.catalogue.validation.BillingSearchModel;
@@ -19,12 +19,12 @@ public class SCBillingSLASearchDto {
 
     protected final FloatRangeDto hourlyBilling;
 
-    protected final DurationRangeDto slaDowntime;
+    protected final IntRangeDto slaDowntime;
 
     protected final FloatRangeDto slaViolationFee;
 
     public SCBillingSLASearchDto(List<BillingModelType> billingModel, FloatRangeDto subscriptionBilling,
-            FloatRangeDto instanceBilling, FloatRangeDto hourlyBilling, DurationRangeDto slaDowntime,
+            FloatRangeDto instanceBilling, FloatRangeDto hourlyBilling, IntRangeDto slaDowntime,
             FloatRangeDto slaViolationFee) {
         this.billingModel = billingModel;
         this.subscriptionBilling = subscriptionBilling;
@@ -50,7 +50,7 @@ public class SCBillingSLASearchDto {
         return this.hourlyBilling;
     }
 
-    public DurationRangeDto getSlaDowntime() {
+    public IntRangeDto getSlaDowntime() {
         return this.slaDowntime;
     }
 

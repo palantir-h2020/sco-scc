@@ -57,7 +57,7 @@ public class ServicesResource {
 
     @GET
     @APIResponse(responseCode = "200")
-    @Operation(summary = "Get all registered Security Capabilities, accessible to the current authenticated user.")
+    @Operation(summary = "GET ALL registered Security Capabilities, accessible to the current authenticated user.")
     public List<SecurityCapabilityDetailsDto> getAll() {
         LOGGER.infof("Received request for ALL registered security capabilities");
 
@@ -71,7 +71,7 @@ public class ServicesResource {
     @Path("{id}")
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "404", description = "Security Capability not found")
-    @Operation(summary = "Find resource by ID")
+    @Operation(summary = "GET ONE registered SC by its ID.")
     public SecurityCapabilityDetailsDto getSingle(@PathParam("id") UUID id) {
         LOGGER.infof("Received request for security capability with ID %s", id);
 
@@ -84,7 +84,7 @@ public class ServicesResource {
     @APIResponse(responseCode = "200", description = "Search OK, matching SCs fetched", content = @Content(schema = @Schema(type = SchemaType.ARRAY, minItems = 1, uniqueItems = true, implementation = SecurityCapabilityDetailsDto.class)))
     @APIResponse(responseCode = "204", description = "Search OK, no matching SCs found")
     @APIResponse(responseCode = "406", description = "Invalid data")
-    @Operation(summary = "Create new resource")
+    @Operation(summary = "SEARCH for SCs, based on the provided parameters.")
     public Response search(@Valid SecurityCapabilitySearchDto searchDto) {
         LOGGER.infof("Received SC search query %s", searchDto);
 
@@ -105,7 +105,7 @@ public class ServicesResource {
     @APIResponse(responseCode = "202", description = "SC update process started", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationDto.class)))
     @APIResponse(responseCode = "204", description = "No changes found for SC to be updated")
     @APIResponse(responseCode = "404", description = "SC not found")
-    @Operation(summary = "Edit resource by ID")
+    @Operation(summary = "EDIT attempt for the SC with the given ID. (Onboarding job begins if required)")
     public Response update(@PathParam("id") UUID id, @Valid SecurityCapabilityRegistrationDto updateDto) {
         LOGGER.infof("Received SC update %s for ID %s", updateDto, id);
 
@@ -113,7 +113,7 @@ public class ServicesResource {
 
         SecurityCapabilityDetailsDto scDto = capabilityService.getSCbyID(id).orElseThrow(NotFoundException::new);
 
-        if (updateDto.equals(scDto)) {
+        if (updateDto.equals(scDto)) { // CHANGE: Implement equals for different high-level-dto and low-level DTOs.
             return Response.noContent().status(Status.NO_CONTENT).build();
         }
 
@@ -126,7 +126,7 @@ public class ServicesResource {
     @Path("{id}")
     @APIResponse(responseCode = "204", description = "Security capability deleted")
     @APIResponse(responseCode = "404", description = "resource not found")
-    @Operation(summary = "Delete resource by ID")
+    @Operation(summary = "DELETE the SC with the given ID.")
     public Response delete(@PathParam("id") UUID id) {
 
         // CHANGE: Add only authentication

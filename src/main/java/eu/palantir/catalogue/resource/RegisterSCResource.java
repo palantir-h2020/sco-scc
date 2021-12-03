@@ -1,5 +1,7 @@
 package eu.palantir.catalogue.resource;
 
+import java.util.UUID;
+
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -24,7 +26,7 @@ import eu.palantir.catalogue.service.SecurityCapabilitySearchService;
 @Path("/api/v1/register/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "register", description = "Registration of a Security Capablitiy")
+@Tag(name = "register", description = "Registration of a Security Capablitiy.")
 public class RegisterSCResource {
 
     private static final Logger LOGGER = Logger.getLogger(RegisterSCResource.class);
@@ -45,7 +47,7 @@ public class RegisterSCResource {
     @APIResponse(responseCode = "401", description = "Unauthorized for SC Registration")
     @APIResponse(responseCode = "406", description = "Invalid input data")
     @APIResponse(responseCode = "409", description = "Conflict, SC already exists")
-    @Operation(summary = "Register an SC, begin creation (or update) and onboarding process.")
+    @Operation(summary = "REGISTER an SC, begin creation and ONBOARDING process.")
     public Response create(@Valid SecurityCapabilityRegistrationDto securityCapabilityDto) {
         LOGGER.infof("Received registration request for security capability %s", securityCapabilityDto);
 
@@ -55,7 +57,8 @@ public class RegisterSCResource {
             return Response.noContent().status(Status.CONFLICT).build();
         }
 
-        registrationService.registerSC(securityCapabilityDto);
+        UUID newSCID = registrationService.registerSC(securityCapabilityDto);
+        securityCapabilityDto.setId(newSCID);
 
         return Response.accepted(securityCapabilityDto).status(Status.ACCEPTED).build();
     }

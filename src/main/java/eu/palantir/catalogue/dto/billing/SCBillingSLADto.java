@@ -1,6 +1,5 @@
 package eu.palantir.catalogue.dto.billing;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,14 +24,14 @@ public class SCBillingSLADto {
 
     @NotNull
     @NotBlank
-    protected final Duration slaDowntime;
+    protected final Integer slaDowntime; // Measured in minutes
 
     @NotNull
     @NotBlank
     protected final Float slaViolationFee;
 
     public SCBillingSLADto(List<BillingModelType> billingModel, Float subscriptionBilling, Float instanceBilling,
-            Float hourlyBilling, Duration slaDowntime, Float slaViolationFee) {
+            Float hourlyBilling, Integer slaDowntime, Float slaViolationFee) {
         this.billingModel = billingModel;
         this.subscriptionBilling = subscriptionBilling;
         this.instanceBilling = instanceBilling;
@@ -57,7 +56,7 @@ public class SCBillingSLADto {
         return this.hourlyBilling;
     }
 
-    public Duration getSlaDowntime() {
+    public Integer getSlaDowntime() {
         return this.slaDowntime;
     }
 

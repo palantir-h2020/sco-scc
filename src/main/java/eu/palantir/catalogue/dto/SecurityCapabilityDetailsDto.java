@@ -1,6 +1,7 @@
 package eu.palantir.catalogue.dto;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,6 +12,9 @@ import eu.palantir.catalogue.dto.security.SCSecurityDto;
 import eu.palantir.catalogue.dto.vnf.VnfDescriptorsDto;
 
 public class SecurityCapabilityDetailsDto {
+
+    @NotNull
+    private final UUID id;
 
     @NotNull
     private final VnfDescriptorsDto vnf;
@@ -27,13 +31,18 @@ public class SecurityCapabilityDetailsDto {
     // @NotNull // CHANGE: Enforce it when privacy descriptors are agreed.
     private final SCPrivacyDto privacy;
 
-    public SecurityCapabilityDetailsDto(VnfDescriptorsDto vnf, SCSecurityDto security, SCBillingSLADto billingSLA,
-            SCIntegrityDto integrity, SCPrivacyDto privacy) {
+    public SecurityCapabilityDetailsDto(UUID id, VnfDescriptorsDto vnf, SCSecurityDto security,
+            SCBillingSLADto billingSLA, SCIntegrityDto integrity, SCPrivacyDto privacy) {
+        this.id = id;
         this.vnf = vnf;
         this.security = security;
         this.billingSLA = billingSLA;
         this.integrity = integrity;
         this.privacy = privacy;
+    }
+
+    public UUID getId() {
+        return this.id;
     }
 
     public VnfDescriptorsDto getVnf() {
@@ -64,7 +73,8 @@ public class SecurityCapabilityDetailsDto {
             return false;
         }
         SecurityCapabilityDetailsDto securityCapabilityDetailsDto = (SecurityCapabilityDetailsDto) o;
-        return Objects.equals(vnf, securityCapabilityDetailsDto.vnf)
+        return Objects.equals(id, securityCapabilityDetailsDto.id)
+                && Objects.equals(vnf, securityCapabilityDetailsDto.vnf)
                 && Objects.equals(security, securityCapabilityDetailsDto.security)
                 && Objects.equals(billingSLA, securityCapabilityDetailsDto.billingSLA)
                 && Objects.equals(integrity, securityCapabilityDetailsDto.integrity)
@@ -73,7 +83,7 @@ public class SecurityCapabilityDetailsDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(vnf, security, billingSLA, integrity, privacy);
+        return Objects.hash(id, vnf, security, billingSLA, integrity, privacy);
     }
 
 }
