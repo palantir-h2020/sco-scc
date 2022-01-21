@@ -11,7 +11,10 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import eu.palantir.catalogue.model.integrity.CheckSum;
+import eu.palantir.catalogue.model.virtualization.CPUArchitecture;
 import eu.palantir.catalogue.model.virtualization.ContainerFormat;
 import eu.palantir.catalogue.model.virtualization.DiskFormat;
 import eu.palantir.catalogue.validation.NotEmptyFields;
@@ -38,21 +41,29 @@ public class VnfSoftwareImageDescriptionDto {
     @JsonProperty("container-format")
     private final ContainerFormat containerFormat;
 
+    @JsonProperty("cpu-arch")
+    @Schema(defaultValue = "x86-64")
+    private final CPUArchitecture cpuArchitecture;
+
+    @JsonProperty("min-cpus")
+    @Min(1)
+    private final Integer minCpus;
+
     @JsonProperty("disk-format")
     private final DiskFormat diskFormat;
 
     @NotNull
-    @Min(0)
+    @Min(1)
     @JsonProperty("min-disk")
     private final Integer minDisk;
 
     @NotNull
-    @Min(0)
+    @Min(1)
     @JsonProperty("min-ram")
     private final Float minRam;
 
     @NotNull
-    @Min(0)
+    @Min(1)
     private final Integer size;
 
     @NotBlank
@@ -64,14 +75,23 @@ public class VnfSoftwareImageDescriptionDto {
     private final List<String> virtualizationEnvironment;
 
     public VnfSoftwareImageDescriptionDto(String id, String name, String version, CheckSum checksum, URI image,
-            ContainerFormat containerFormat, DiskFormat diskFormat, Integer minDisk, Float minRam, Integer size,
-            String operatingSystem, List<String> virtualizationEnvironment) {
+            ContainerFormat containerFormat, CPUArchitecture cpuArchitecture, Integer minCpus, DiskFormat diskFormat,
+            Integer minDisk, Float minRam, Integer size, String operatingSystem,
+            List<String> virtualizationEnvironment) {
         this.id = id;
         this.name = name;
         this.version = version;
         this.checksum = checksum;
         this.image = image;
         this.containerFormat = containerFormat;
+        if (cpuArchitecture == null) {
+            this.cpuArchitecture = CPUArchitecture.X86_64;
+        } else
+            this.cpuArchitecture = cpuArchitecture;
+        if (minCpus == null) {
+            this.minCpus = 1;
+        } else
+            this.minCpus = minCpus;
         this.diskFormat = diskFormat;
         this.minDisk = minDisk;
         this.minRam = minRam;
@@ -102,6 +122,14 @@ public class VnfSoftwareImageDescriptionDto {
 
     public ContainerFormat getContainerFormat() {
         return this.containerFormat;
+    }
+
+    public CPUArchitecture getCpuArchitecture() {
+        return this.cpuArchitecture;
+    }
+
+    public Integer getMinCpus() {
+        return this.minCpus;
     }
 
     public DiskFormat getDiskFormat() {
@@ -142,6 +170,8 @@ public class VnfSoftwareImageDescriptionDto {
                 && Objects.equals(checksum, vnfSoftwareImageDescriptionDto.checksum)
                 && Objects.equals(image, vnfSoftwareImageDescriptionDto.image)
                 && Objects.equals(containerFormat, vnfSoftwareImageDescriptionDto.containerFormat)
+                && Objects.equals(cpuArchitecture, vnfSoftwareImageDescriptionDto.cpuArchitecture)
+                && Objects.equals(minCpus, vnfSoftwareImageDescriptionDto.minCpus)
                 && Objects.equals(diskFormat, vnfSoftwareImageDescriptionDto.diskFormat)
                 && Objects.equals(minDisk, vnfSoftwareImageDescriptionDto.minDisk)
                 && Objects.equals(minRam, vnfSoftwareImageDescriptionDto.minRam)
@@ -152,8 +182,28 @@ public class VnfSoftwareImageDescriptionDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, version, checksum, image, containerFormat, diskFormat, minDisk, minRam, size,
-                operatingSystem, virtualizationEnvironment);
+        return Objects.hash(id, name, version, checksum, image, containerFormat, cpuArchitecture, minCpus, diskFormat,
+                minDisk, minRam, size, operatingSystem, virtualizationEnvironment);
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                " id='" + getId() + "'" +
+                ", name='" + getName() + "'" +
+                ", version='" + getVersion() + "'" +
+                ", checksum='" + getChecksum() + "'" +
+                ", image='" + getImage() + "'" +
+                ", containerFormat='" + getContainerFormat() + "'" +
+                ", cpuArchitecture='" + getCpuArchitecture() + "'" +
+                ", minCpus='" + getMinCpus() + "'" +
+                ", diskFormat='" + getDiskFormat() + "'" +
+                ", minDisk='" + getMinDisk() + "'" +
+                ", minRam='" + getMinRam() + "'" +
+                ", size='" + getSize() + "'" +
+                ", operatingSystem='" + getOperatingSystem() + "'" +
+                ", virtualizationEnvironment='" + getVirtualizationEnvironment() + "'" +
+                "}";
     }
 
 }

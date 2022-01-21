@@ -21,6 +21,7 @@ import eu.palantir.catalogue.model.network.EtherType;
 import eu.palantir.catalogue.model.network.TrafficDirection;
 import eu.palantir.catalogue.model.network.TransportProtocol;
 import eu.palantir.catalogue.model.security.PalantirDeploymentModel;
+import eu.palantir.catalogue.model.virtualization.CPUArchitecture;
 import eu.palantir.catalogue.model.virtualization.ContainerFormat;
 import eu.palantir.catalogue.model.virtualization.DiskFormat;
 
@@ -46,6 +47,8 @@ public class StaticStore {
                 "e1af2bbb505e0a9fd03721cdbada1623a2cb7f680da6d2e2d1e38d19bd8bdfd3");
         URI imageURIDefault = URI.create("https://www.example.net/myimagedef");
         ContainerFormat containerFormatDefault = ContainerFormat.DOCKER;
+        CPUArchitecture defaultCpuArch = CPUArchitecture.X86_64;
+        Integer cpuNumber = 2;
         DiskFormat diskFormatDefault = DiskFormat.RAW;
         Integer minDiskDefault = 2048;
         Float minRamDefault = (float) 1024.0;
@@ -57,7 +60,9 @@ public class StaticStore {
                 imgNameDefault, imgVersionDefault,
                 checksumDefault,
                 imageURIDefault,
-                containerFormatDefault, diskFormatDefault, minDiskDefault, minRamDefault, sizeDefault,
+                containerFormatDefault,
+                defaultCpuArch,
+                cpuNumber, diskFormatDefault, minDiskDefault, minRamDefault, sizeDefault,
                 operatingSystemDefault,
                 virtualizationEnvironmentDefault);
 
@@ -151,7 +156,8 @@ public class StaticStore {
                 imgNameOne, imgVersionOne,
                 checksumOne,
                 imageURIOne,
-                containerFormatOne, diskFormatOne, minDiskOne, minRamOne, sizeOne,
+                containerFormatOne, defaultCpuArch,
+                cpuNumber, diskFormatOne, minDiskOne, minRamOne, sizeOne,
                 operatingSystemOne,
                 virtualizationEnvironmentOne);
 
@@ -230,7 +236,8 @@ public class StaticStore {
                 imgNameTwo, imgVersionTwo,
                 checksumTwo,
                 imageURITwo,
-                containerFormatTwo, diskFormatTwo, minDiskTwo, minRamTwo, sizeTwo,
+                containerFormatTwo, defaultCpuArch,
+                cpuNumber, diskFormatTwo, minDiskTwo, minRamTwo, sizeTwo,
                 operatingSystemTwo,
                 virtualizatiTwonvironmentTwo);
 
