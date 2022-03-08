@@ -1,14 +1,12 @@
 package eu.palantir.catalogue.model.security;
 
+import io.quarkus.mongodb.panache.common.MongoEntity;
+
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.Entity;
-
-import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
-
-@Entity
-public class SCSecurity extends PanacheMongoEntityBase {
+@MongoEntity
+public class SCSecurity {
 
     private List<PalantirDeploymentModel> deploymentModels;
 

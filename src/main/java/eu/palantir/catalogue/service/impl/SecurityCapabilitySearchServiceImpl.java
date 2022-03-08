@@ -7,19 +7,22 @@ import javax.inject.Inject;
 
 import eu.palantir.catalogue.auth.CatalogueClient;
 import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
-import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationDto;
+import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.dto.SecurityCapabilitySearchDto;
+import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
 import eu.palantir.catalogue.service.SecurityCapabilitySearchService;
 import eu.palantir.catalogue.store.StaticStore;
 
 @ApplicationScoped
 public class SecurityCapabilitySearchServiceImpl implements SecurityCapabilitySearchService {
 
-    StaticStore scStore;
+    private final StaticStore scStore;
+    private final SecurityCapabilityRepository securityCapabilityRepository;
 
     @Inject
-    public SecurityCapabilitySearchServiceImpl(StaticStore scStore) {
+    public SecurityCapabilitySearchServiceImpl(StaticStore scStore, SecurityCapabilityRepository securityCapabilityRepository) {
         this.scStore = scStore;
+        this.securityCapabilityRepository = securityCapabilityRepository;
     }
 
     @Override
@@ -56,7 +59,7 @@ public class SecurityCapabilitySearchServiceImpl implements SecurityCapabilitySe
     }
 
     @Override
-    public Boolean exists(SecurityCapabilityRegistrationDto registrationDto) {
+    public boolean exists(SecurityCapabilityRegistrationRequestDto registrationDto) {
         // CHANGE: Implement during DB integration
         return false;
     }

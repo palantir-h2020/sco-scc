@@ -27,7 +27,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
 import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
-import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationDto;
+import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.dto.SecurityCapabilitySearchDto;
 import eu.palantir.catalogue.service.SecurityCapabilityRegistrationService;
 import eu.palantir.catalogue.service.SecurityCapabilitySearchService;
@@ -102,11 +102,11 @@ public class ServicesResource {
 
     @PATCH
     @Path("{id}")
-    @APIResponse(responseCode = "202", description = "SC update process started", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationDto.class)))
+    @APIResponse(responseCode = "202", description = "SC update process started", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationRequestDto.class)))
     @APIResponse(responseCode = "204", description = "No changes found for SC to be updated")
     @APIResponse(responseCode = "404", description = "SC not found")
     @Operation(summary = "EDIT attempt for the SC with the given ID. (Onboarding job begins if required)")
-    public Response update(@PathParam("id") UUID id, @Valid SecurityCapabilityRegistrationDto updateDto) {
+    public Response update(@PathParam("id") UUID id, @Valid SecurityCapabilityRegistrationRequestDto updateDto) {
         LOGGER.infof("Received SC update %s for ID %s", updateDto, id);
 
         // CHANGE: Add user-based filtering

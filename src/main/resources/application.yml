@@ -24,5 +24,14 @@ quarkus:
       # As per https://quarkus.io/guides/opentracing#create-the-configuration
       format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
 
+  mongodb:
+    database: catalog
+    # An example of the connection string. Notice that uuidRepresentation=standard is required to
+    # be able to use UUID types for identifiers.
+    # connection-string: mongodb://root:rootpassword@localhost:27017/?uuidRepresentation=standard
+    devservices:
+      properties:
+        uuidRepresentation: standard
+
   swagger-ui:
     title: Security Capabilities Catalogue API

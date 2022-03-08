@@ -1,21 +1,19 @@
 package eu.palantir.catalogue.model.vnf;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Objects;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import eu.palantir.catalogue.model.integrity.CheckSum;
 import eu.palantir.catalogue.model.virtualization.CPUArchitecture;
 import eu.palantir.catalogue.model.virtualization.ContainerFormat;
 import eu.palantir.catalogue.model.virtualization.DiskFormat;
-import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
 
-@Entity
-public class VnfSoftwareImageDescription extends PanacheMongoEntityBase {
+import io.quarkus.mongodb.panache.common.MongoEntity;
 
+import javax.persistence.Id;
+import java.net.URI;
+import java.util.List;
+import java.util.Objects;
+
+@MongoEntity
+public class VnfSoftwareImageDescription {
     @Id
     private String id;
 

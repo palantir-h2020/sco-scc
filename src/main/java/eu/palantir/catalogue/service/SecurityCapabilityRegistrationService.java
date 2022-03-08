@@ -1,14 +1,13 @@
 package eu.palantir.catalogue.service;
 
-import java.util.UUID;
-
-import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationDto;
+import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
+import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationInfoDto;
 
 public interface SecurityCapabilityRegistrationService {
 
-    UUID registerSC(SecurityCapabilityRegistrationDto registrationDto);
+    SecurityCapabilityRegistrationInfoDto register(SecurityCapabilityRegistrationRequestDto registrationDto);
 
     // true if update is possible
-    Boolean updateSC(SecurityCapabilityRegistrationDto registrationDto);
+    Boolean updateSC(SecurityCapabilityRegistrationRequestDto registrationDto);
 
 }
