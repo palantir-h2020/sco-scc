@@ -35,14 +35,19 @@ public class SecurityCapabilityServiceImpl implements SecurityCapabilityService 
             return Optional.empty();
         }
 
-        LOGGER.infof("Retrieved %s", securityCapability.get());
+        LOGGER.infof("Retrieved security capability %s", securityCapability.get());
         final var securityCapabilityDetailsDto = mapper.toSecurityCapabilityDetailsDto(securityCapability.get());
         return Optional.of(securityCapabilityDetailsDto);
     }
 
     @Override
-    public Boolean deleteSCbyID(UUID id) {
-        // CHANGE: Implement during DB integration
-        return true;
+    public boolean deleteById(UUID id) {
+        final var deleted = securityCapabilityRepository.deleteById(id);
+        if (deleted) {
+            LOGGER.infof("Deleted security capability with id '%s'", id);
+        } else {
+            LOGGER.infof("Security capability with id '%s' not found", id);
+        }
+        return deleted;
     }
 }

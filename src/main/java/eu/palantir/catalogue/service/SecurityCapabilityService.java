@@ -9,6 +9,5 @@ public interface SecurityCapabilityService {
 
     Optional<SecurityCapabilityDetailsDto> getById(UUID id);
 
-    Boolean deleteSCbyID(UUID id);
-
+    boolean deleteById(UUID id);
 }

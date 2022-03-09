@@ -125,17 +125,13 @@ public class ServicesResource {
     @DELETE
     @Path("{id}")
     @APIResponse(responseCode = "204", description = "Security capability deleted")
-    @APIResponse(responseCode = "404", description = "resource not found")
-    @Operation(summary = "DELETE the SC with the given ID.")
+    @APIResponse(responseCode = "404", description = "Security capability not found")
+    @Operation(summary = "Delete a security capability using its id")
     public Response delete(@PathParam("id") UUID id) {
-
         // CHANGE: Add only authentication
 
-        capabilityService.getById(id).orElseThrow(NotFoundException::new);
-
-        // Delete, and throw 500 if it fails
-        if (!capabilityService.deleteSCbyID(id)) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        if (!capabilityService.deleteById(id)) {
+            return Response.status(Status.NOT_FOUND).build();
         }
 
         // CHANGE: Add the call to the SO client to delete the SC.
