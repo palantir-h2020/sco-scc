@@ -7,7 +7,6 @@ import eu.palantir.catalogue.model.vnf.VnfDescriptors;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import org.bson.codecs.pojo.annotations.BsonId;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @MongoEntity
@@ -21,15 +20,6 @@ public class SecurityCapability {
     private SCSecurity security;
 
     private SCBillingSLA billingSLA;
-
-    // CHANGE: Enforce it when integrity descriptors are agreed.
-    // private SCIntegrity integrity;
-
-    // CHANGE: Enforce it when privacy descriptors are agreed.
-    // private SCPrivacy privacy;
-
-    public SecurityCapability() {
-    }
 
     public UUID getId() {
         return this.id;

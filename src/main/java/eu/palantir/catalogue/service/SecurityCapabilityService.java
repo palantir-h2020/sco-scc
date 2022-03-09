@@ -7,7 +7,7 @@ import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
 
 public interface SecurityCapabilityService {
 
-    Optional<SecurityCapabilityDetailsDto> getSCbyID(UUID id);
+    Optional<SecurityCapabilityDetailsDto> getById(UUID id);
 
     Boolean deleteSCbyID(UUID id);
 

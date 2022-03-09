@@ -1,35 +1,43 @@
 package eu.palantir.catalogue.service.impl;
 
-import java.util.Optional;
-import java.util.UUID;
+import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
+import eu.palantir.catalogue.dto.mappers.SecurityCapabilityMapper;
+import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
+import eu.palantir.catalogue.service.SecurityCapabilityService;
+
+import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
-import eu.palantir.catalogue.service.SecurityCapabilityService;
-import eu.palantir.catalogue.store.StaticStore;
+import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 public class SecurityCapabilityServiceImpl implements SecurityCapabilityService {
+    private static final Logger LOGGER = Logger.getLogger(SecurityCapabilityServiceImpl.class);
 
-    StaticStore scStore;
+    private final SecurityCapabilityMapper mapper;
+    private final SecurityCapabilityRepository securityCapabilityRepository;
 
     @Inject
-    public SecurityCapabilityServiceImpl(StaticStore scStore) {
-        this.scStore = scStore;
+    public SecurityCapabilityServiceImpl(SecurityCapabilityMapper mapper, SecurityCapabilityRepository securityCapabilityRepository) {
+        this.mapper = mapper;
+        this.securityCapabilityRepository = securityCapabilityRepository;
     }
 
     @Override
-    public Optional<SecurityCapabilityDetailsDto> getSCbyID(UUID id) {
-        // CHANGE: Implement during DB integration
-        if (id.toString().equals("fc83e9a0-2ed5-4c23-b6da-62513953233b")) {
-            return Optional.of(scStore.getSample(1));
+    public Optional<SecurityCapabilityDetailsDto> getById(UUID id) {
+        LOGGER.infof("Retrieving security capability by id '%s'", id);
+        final var securityCapability = securityCapabilityRepository.findByIdOptional(id);
+
+        if (securityCapability.isEmpty()) {
+            LOGGER.infof("Security capability with id '%s' was not found", id);
+            return Optional.empty();
         }
-        if (id.toString().equals("ee4efa39-28c6-4657-afbd-103ad588b255")) {
-            return Optional.of(scStore.getSample(2));
-        }
-        return Optional.of(scStore.getSample(3));
+
+        LOGGER.infof("Retrieved %s", securityCapability.get());
+        final var securityCapabilityDetailsDto = mapper.toSecurityCapabilityDetailsDto(securityCapability.get());
+        return Optional.of(securityCapabilityDetailsDto);
     }
 
     @Override
@@ -37,5 +45,4 @@ public class SecurityCapabilityServiceImpl implements SecurityCapabilityService 
         // CHANGE: Implement during DB integration
         return true;
     }
-
 }

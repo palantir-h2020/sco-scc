@@ -69,15 +69,15 @@ public class ServicesResource {
 
     @GET
     @Path("{id}")
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "404", description = "Security Capability not found")
-    @Operation(summary = "GET ONE registered SC by its ID.")
-    public SecurityCapabilityDetailsDto getSingle(@PathParam("id") UUID id) {
-        LOGGER.infof("Received request for security capability with ID %s", id);
+    @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = SecurityCapabilityDetailsDto.class)))
+    @APIResponse(responseCode = "404", description = "Security capability not found")
+    @Operation(summary = "Get a registered security capability by its identifier")
+    public SecurityCapabilityDetailsDto get(@PathParam("id") UUID id) {
+        LOGGER.infof("Received request to retrieve security capability with id '%s'", id);
 
         // CHANGE: Add only authentication
 
-        return capabilityService.getSCbyID(id).orElseThrow(NotFoundException::new);
+        return capabilityService.getById(id).orElseThrow(NotFoundException::new);
     }
 
     @POST
@@ -111,7 +111,7 @@ public class ServicesResource {
 
         // CHANGE: Add user-based filtering
 
-        SecurityCapabilityDetailsDto scDto = capabilityService.getSCbyID(id).orElseThrow(NotFoundException::new);
+        SecurityCapabilityDetailsDto scDto = capabilityService.getById(id).orElseThrow(NotFoundException::new);
 
         if (updateDto.equals(scDto)) { // CHANGE: Implement equals for different high-level-dto and low-level DTOs.
             return Response.noContent().status(Status.NO_CONTENT).build();
@@ -131,7 +131,7 @@ public class ServicesResource {
 
         // CHANGE: Add only authentication
 
-        capabilityService.getSCbyID(id).orElseThrow(NotFoundException::new);
+        capabilityService.getById(id).orElseThrow(NotFoundException::new);
 
         // Delete, and throw 500 if it fails
         if (!capabilityService.deleteSCbyID(id)) {
