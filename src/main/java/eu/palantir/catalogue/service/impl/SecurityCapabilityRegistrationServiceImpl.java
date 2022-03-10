@@ -3,6 +3,7 @@ package eu.palantir.catalogue.service.impl;
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationInfoDto;
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.dto.mappers.SecurityCapabilityMapper;
+import eu.palantir.catalogue.model.SecurityCapabilityStatus;
 import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
 import eu.palantir.catalogue.service.SecurityCapabilityRegistrationService;
 
@@ -32,12 +33,14 @@ public class SecurityCapabilityRegistrationServiceImpl implements SecurityCapabi
 
         final var uuid = UUID.randomUUID();
         securityCapability.setId(uuid);
+        final var registeredStatus = SecurityCapabilityStatus.REGISTERED;
+        securityCapability.setStatus(registeredStatus);
         LOGGER.infof("Registering %s", securityCapability);
 
         securityCapabilityRepository.persist(securityCapability);
         LOGGER.infof("Persisted security capability with id: %s", securityCapability.getId());
 
-        return new SecurityCapabilityRegistrationInfoDto(uuid);
+        return new SecurityCapabilityRegistrationInfoDto(uuid, registeredStatus);
     }
 
     @Override

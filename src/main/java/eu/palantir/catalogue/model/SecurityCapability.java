@@ -15,6 +15,8 @@ public class SecurityCapability {
     @BsonId
     private UUID id;
 
+    private SecurityCapabilityStatus status;
+
     private VnfDescriptors vnf;
 
     private SCSecurity security;
@@ -27,6 +29,14 @@ public class SecurityCapability {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public SecurityCapabilityStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SecurityCapabilityStatus status) {
+        this.status = status;
     }
 
     public VnfDescriptors getVnf() {
@@ -77,6 +87,7 @@ public class SecurityCapability {
     public String toString() {
         return "{" +
                 " id='" + getId() + "'" +
+                " status='" + getStatus() + "'" +
                 ", vnf='" + getVnf() + "'" +
                 ", security='" + getSecurity() + "'" +
                 ", billingSLA='" + getBillingSLA() + "'" +

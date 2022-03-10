@@ -1,5 +1,6 @@
 package eu.palantir.catalogue.dto;
 
+import eu.palantir.catalogue.model.SecurityCapabilityStatus;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -17,6 +18,9 @@ public class SecurityCapabilityDetailsDto {
     private final UUID id;
 
     @NotNull
+    private final SecurityCapabilityStatus status;
+
+    @NotNull
     private final VnfDescriptorsDto vnf;
 
     @NotNull
@@ -31,9 +35,11 @@ public class SecurityCapabilityDetailsDto {
     // @NotNull // CHANGE: Enforce it when privacy descriptors are agreed.
     private final SCPrivacyDto privacy;
 
-    public SecurityCapabilityDetailsDto(UUID id, VnfDescriptorsDto vnf, SCSecurityDto security,
+    public SecurityCapabilityDetailsDto(UUID id, SecurityCapabilityStatus status,
+            VnfDescriptorsDto vnf, SCSecurityDto security,
             SCBillingSLADto billingSLA, SCIntegrityDto integrity, SCPrivacyDto privacy) {
         this.id = id;
+        this.status = status;
         this.vnf = vnf;
         this.security = security;
         this.billingSLA = billingSLA;
@@ -43,6 +49,10 @@ public class SecurityCapabilityDetailsDto {
 
     public UUID getId() {
         return this.id;
+    }
+
+    public SecurityCapabilityStatus getStatus() {
+        return status;
     }
 
     public VnfDescriptorsDto getVnf() {
@@ -64,26 +74,4 @@ public class SecurityCapabilityDetailsDto {
     public SCPrivacyDto getPrivacy() {
         return this.privacy;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof SecurityCapabilityDetailsDto)) {
-            return false;
-        }
-        SecurityCapabilityDetailsDto securityCapabilityDetailsDto = (SecurityCapabilityDetailsDto) o;
-        return Objects.equals(id, securityCapabilityDetailsDto.id)
-                && Objects.equals(vnf, securityCapabilityDetailsDto.vnf)
-                && Objects.equals(security, securityCapabilityDetailsDto.security)
-                && Objects.equals(billingSLA, securityCapabilityDetailsDto.billingSLA)
-                && Objects.equals(integrity, securityCapabilityDetailsDto.integrity)
-                && Objects.equals(privacy, securityCapabilityDetailsDto.privacy);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, vnf, security, billingSLA, integrity, privacy);
-    }
-
 }
