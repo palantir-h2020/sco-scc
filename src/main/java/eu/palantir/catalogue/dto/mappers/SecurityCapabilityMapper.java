@@ -6,6 +6,8 @@ import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.model.SecurityCapability;
 
+import java.util.List;
+
 import org.mapstruct.InjectionStrategy;
 
 @Mapper(componentModel = "cdi", uses = {
@@ -19,5 +21,8 @@ public interface SecurityCapabilityMapper {
 
     SecurityCapabilityDetailsDto toSecurityCapabilityDetailsDto(SecurityCapability securityCapability);
 
-    SecurityCapability toSecurityCapability(SecurityCapabilityRegistrationRequestDto securityCapabilityRegistrationRequestDto);
+    List<SecurityCapabilityDetailsDto> toSecurityCapabilityDetailsDtoList(List<SecurityCapability> securityCapability);
+
+    SecurityCapability toSecurityCapability(
+            SecurityCapabilityRegistrationRequestDto securityCapabilityRegistrationRequestDto);
 }

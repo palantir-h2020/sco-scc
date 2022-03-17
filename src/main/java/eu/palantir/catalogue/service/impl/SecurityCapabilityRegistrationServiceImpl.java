@@ -49,26 +49,39 @@ public class SecurityCapabilityRegistrationServiceImpl implements SecurityCapabi
         String xnfId = "";
         String nsId = "";
 
-        try {
-            IdDto xnfIdDto = securityOrchestratorClient.onboardXnf(new PackageFormDto(""));
+        // If already IDs are provided, do not contact the SO
+        if ((securityCapability.getNsId() == null || securityCapability
+                .getNsId().equals(""))
+                || (securityCapability.getXnfId() == null || securityCapability.getXnfId().equals(""))) {
 
-            IdDto nsIdDto = securityOrchestratorClient.onboardNs(new PackageFormDto(""));
+            try {
+                IdDto xnfIdDto = securityOrchestratorClient.onboardXnf(new PackageFormDto(""));
 
-            if (xnfIdDto != null && nsIdDto != null) {
-                registeredStatus = SecurityCapabilityStatus.ONBOARDED;
-                securityCapability.setStatus(registeredStatus);
-                xnfId = xnfIdDto.getId().toString();
-                nsId = nsIdDto.getId().toString();
+                IdDto nsIdDto = securityOrchestratorClient.onboardNs(new PackageFormDto(""));
+
+                if (xnfIdDto != null && nsIdDto != null) {
+                    registeredStatus = SecurityCapabilityStatus.ONBOARDED;
+                    securityCapability.setStatus(registeredStatus);
+                    xnfId = xnfIdDto.getId().toString();
+                    nsId = nsIdDto.getId().toString();
+                }
+
+                securityCapability.setXnfId(xnfId);
+                securityCapability.getVnf().setId(UUID.fromString(xnfId));
+                securityCapability.setNsId(nsId);
+            } catch (Exception ex) {
+                LOGGER.errorf("Could not onboard packages on Orchestrator, with error: %s", ex);
             }
-        } catch (Exception ex) {
-            LOGGER.errorf("Could not onboard packages on Orchestrator, with error: %s", ex);
+        } else {
+            xnfId = securityCapability.getXnfId();
+            securityCapability.getVnf().setId(UUID.fromString(xnfId));
+            nsId = securityCapability.getNsId();
+            registeredStatus = SecurityCapabilityStatus.ONBOARDED;
+            securityCapability.setStatus(registeredStatus);
         }
 
         LOGGER.infof("Prepared security capability %s for storage.", securityCapability);
 
-        securityCapability.setXnfId(xnfId);
-        securityCapability.getVnf().setId(UUID.fromString(xnfId));
-        securityCapability.setNsId(nsId);
         securityCapabilityRepository.persist(securityCapability);
         LOGGER.infof("Persisted security capability with id: %s", securityCapability.getId());
 

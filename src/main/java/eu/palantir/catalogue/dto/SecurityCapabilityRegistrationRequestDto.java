@@ -19,10 +19,18 @@ public class SecurityCapabilityRegistrationRequestDto {
     @NotNull
     private final SCBillingSLADto billingSLA;
 
-    public SecurityCapabilityRegistrationRequestDto(VnfRegistrationDto vnf, SCSecurityDto security, SCBillingSLADto billingSLA) {
+    // Manual registration of already-onboarded capability
+    private String xnfId;
+
+    private String nsId;
+
+    public SecurityCapabilityRegistrationRequestDto(VnfRegistrationDto vnf, SCSecurityDto security,
+            SCBillingSLADto billingSLA, String xnfId, String nsId) {
         this.vnf = vnf;
         this.security = security;
         this.billingSLA = billingSLA;
+        this.xnfId = xnfId;
+        this.nsId = nsId;
     }
 
     public VnfRegistrationDto getVnf() {
@@ -35,6 +43,22 @@ public class SecurityCapabilityRegistrationRequestDto {
 
     public SCBillingSLADto getBillingSLA() {
         return this.billingSLA;
+    }
+
+    public String getXnfId() {
+        return this.xnfId;
+    }
+
+    public void setXnfId(String xnfId) {
+        this.xnfId = xnfId;
+    }
+
+    public String getNsId() {
+        return this.nsId;
+    }
+
+    public void setNsId(String nsId) {
+        this.nsId = nsId;
     }
 
     @Override

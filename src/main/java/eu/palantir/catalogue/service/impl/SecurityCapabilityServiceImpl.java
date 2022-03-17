@@ -2,13 +2,18 @@ package eu.palantir.catalogue.service.impl;
 
 import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
 import eu.palantir.catalogue.dto.mappers.SecurityCapabilityMapper;
+import eu.palantir.catalogue.model.SecurityCapability;
 import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
 import eu.palantir.catalogue.service.SecurityCapabilityService;
+import io.quarkus.panache.common.Sort;
 
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,7 +25,8 @@ public class SecurityCapabilityServiceImpl implements SecurityCapabilityService 
     private final SecurityCapabilityRepository securityCapabilityRepository;
 
     @Inject
-    public SecurityCapabilityServiceImpl(SecurityCapabilityMapper mapper, SecurityCapabilityRepository securityCapabilityRepository) {
+    public SecurityCapabilityServiceImpl(SecurityCapabilityMapper mapper,
+            SecurityCapabilityRepository securityCapabilityRepository) {
         this.mapper = mapper;
         this.securityCapabilityRepository = securityCapabilityRepository;
     }
@@ -49,5 +55,18 @@ public class SecurityCapabilityServiceImpl implements SecurityCapabilityService 
             LOGGER.infof("Security capability with id '%s' not found", id);
         }
         return deleted;
+    }
+
+    @Override
+    public List<SecurityCapabilityDetailsDto> getAll() {
+        List<SecurityCapabilityDetailsDto> list = new ArrayList<SecurityCapabilityDetailsDto>();
+        final List<SecurityCapability> returned = securityCapabilityRepository.listAll();
+        if (returned == null || returned.isEmpty()) {
+            LOGGER.infof("No SCs found");
+        } else {
+            LOGGER.infof("Retrieved ALL security capabilities");
+            list = mapper.toSecurityCapabilityDetailsDtoList(returned);
+        }
+        return list;
     }
 }

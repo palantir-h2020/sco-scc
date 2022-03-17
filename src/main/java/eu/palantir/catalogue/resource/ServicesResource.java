@@ -64,7 +64,7 @@ public class ServicesResource {
         // CHANGE: Add user-based filtering
         // CHANGE: Add pagination
 
-        return searchService.getAll();
+        return capabilityService.getAll();
     }
 
     @GET
