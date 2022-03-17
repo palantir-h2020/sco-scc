@@ -25,7 +25,7 @@ import eu.palantir.catalogue.service.SecurityCapabilitySearchService;
 @Path("/api/v1/register/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "register", description = "Registration of a Security Capablitiy.")
+@Tag(name = "register", description = "Registration of a Security Capability.")
 public class RegisterSCResource {
 
     private static final Logger LOGGER = Logger.getLogger(RegisterSCResource.class);

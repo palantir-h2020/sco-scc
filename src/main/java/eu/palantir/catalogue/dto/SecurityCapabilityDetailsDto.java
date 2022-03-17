@@ -17,6 +17,10 @@ public class SecurityCapabilityDetailsDto {
     @NotNull
     private final UUID id;
 
+    private String xnfId;
+
+    private String nsId;
+
     @NotNull
     private final SecurityCapabilityStatus status;
 
@@ -35,10 +39,12 @@ public class SecurityCapabilityDetailsDto {
     // @NotNull // CHANGE: Enforce it when privacy descriptors are agreed.
     private final SCPrivacyDto privacy;
 
-    public SecurityCapabilityDetailsDto(UUID id, SecurityCapabilityStatus status,
-            VnfDescriptorsDto vnf, SCSecurityDto security,
-            SCBillingSLADto billingSLA, SCIntegrityDto integrity, SCPrivacyDto privacy) {
+    public SecurityCapabilityDetailsDto(UUID id, String xnfId, String nsId, SecurityCapabilityStatus status,
+            VnfDescriptorsDto vnf, SCSecurityDto security, SCBillingSLADto billingSLA, SCIntegrityDto integrity,
+            SCPrivacyDto privacy) {
         this.id = id;
+        this.xnfId = xnfId;
+        this.nsId = nsId;
         this.status = status;
         this.vnf = vnf;
         this.security = security;
@@ -51,8 +57,24 @@ public class SecurityCapabilityDetailsDto {
         return this.id;
     }
 
+    public String getXnfId() {
+        return this.xnfId;
+    }
+
+    public String getNsId() {
+        return this.nsId;
+    }
+
+    public void setXnfId(String xnfId) {
+        this.xnfId = xnfId;
+    }
+
+    public void setNsId(String nsId) {
+        this.nsId = nsId;
+    }
+
     public SecurityCapabilityStatus getStatus() {
-        return status;
+        return this.status;
     }
 
     public VnfDescriptorsDto getVnf() {
@@ -74,4 +96,44 @@ public class SecurityCapabilityDetailsDto {
     public SCPrivacyDto getPrivacy() {
         return this.privacy;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof SecurityCapabilityDetailsDto)) {
+            return false;
+        }
+        SecurityCapabilityDetailsDto securityCapabilityDetailsDto = (SecurityCapabilityDetailsDto) o;
+        return Objects.equals(id, securityCapabilityDetailsDto.id)
+                && Objects.equals(xnfId, securityCapabilityDetailsDto.xnfId)
+                && Objects.equals(nsId, securityCapabilityDetailsDto.nsId)
+                && Objects.equals(status, securityCapabilityDetailsDto.status)
+                && Objects.equals(vnf, securityCapabilityDetailsDto.vnf)
+                && Objects.equals(security, securityCapabilityDetailsDto.security)
+                && Objects.equals(billingSLA, securityCapabilityDetailsDto.billingSLA)
+                && Objects.equals(integrity, securityCapabilityDetailsDto.integrity)
+                && Objects.equals(privacy, securityCapabilityDetailsDto.privacy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, xnfId, nsId, status, vnf, security, billingSLA, integrity, privacy);
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                " id='" + getId() + "'" +
+                ", xnfId='" + getXnfId() + "'" +
+                ", nsId='" + getNsId() + "'" +
+                ", status='" + getStatus() + "'" +
+                ", vnf='" + getVnf() + "'" +
+                ", security='" + getSecurity() + "'" +
+                ", billingSLA='" + getBillingSLA() + "'" +
+                ", integrity='" + getIntegrity() + "'" +
+                ", privacy='" + getPrivacy() + "'" +
+                "}";
+    }
+
 }
