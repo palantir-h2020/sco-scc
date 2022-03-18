@@ -1,19 +1,18 @@
 package eu.palantir.catalogue.model.vnf;
 
-import java.util.Objects;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-
 import eu.palantir.catalogue.model.network.EtherType;
 import eu.palantir.catalogue.model.network.TrafficDirection;
 import eu.palantir.catalogue.model.network.TransportProtocol;
-import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
 
-@Entity
-public class VnfSecurityGroupRule extends PanacheMongoEntityBase {
+import io.quarkus.mongodb.panache.common.MongoEntity;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import java.util.Objects;
+
+@MongoEntity
+public class VnfSecurityGroupRule {
 
     @Id
     private String id;

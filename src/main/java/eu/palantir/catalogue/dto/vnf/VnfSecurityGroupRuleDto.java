@@ -28,6 +28,7 @@ public class VnfSecurityGroupRuleDto {
     @JsonProperty("ether-type")
     private final EtherType etherType;
 
+    // CHANGE INTO LIST OF PROTOCOLS
     @NotNull
     private final TransportProtocol protocol;
 

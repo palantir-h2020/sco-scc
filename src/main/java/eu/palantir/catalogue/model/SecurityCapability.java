@@ -1,23 +1,26 @@
 package eu.palantir.catalogue.model;
 
+import eu.palantir.catalogue.model.billing.SCBillingSLA;
+import eu.palantir.catalogue.model.security.SCSecurity;
+import eu.palantir.catalogue.model.vnf.VnfDescriptors;
+
+import io.quarkus.mongodb.panache.common.MongoEntity;
+import org.bson.codecs.pojo.annotations.BsonId;
+
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+@MongoEntity
+public class SecurityCapability {
 
-import eu.palantir.catalogue.model.billing.SCBillingSLA;
-import eu.palantir.catalogue.model.integrity.SCIntegrity;
-import eu.palantir.catalogue.model.privacy.SCPrivacy;
-import eu.palantir.catalogue.model.security.SCSecurity;
-import eu.palantir.catalogue.model.vnf.VnfDescriptors;
-import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
-
-@Entity
-public class SecurityCapability extends PanacheMongoEntityBase {
-
-    @Id
+    @BsonId
     private UUID id;
+
+    private SecurityCapabilityStatus status;
+
+    private String xnfId;
+
+    private String nsId;
 
     private VnfDescriptors vnf;
 
@@ -25,23 +28,18 @@ public class SecurityCapability extends PanacheMongoEntityBase {
 
     private SCBillingSLA billingSLA;
 
-    // CHANGE: Enforce it when integrity descriptors are agreed.
-    private SCIntegrity integrity;
-
-    // CHANGE: Enforce it when privacy descriptors are agreed.
-    private SCPrivacy privacy;
-
     public SecurityCapability() {
     }
 
-    public SecurityCapability(UUID id, VnfDescriptors vnf, SCSecurity security, SCBillingSLA billingSLA,
-            SCIntegrity integrity, SCPrivacy privacy) {
+    public SecurityCapability(UUID id, SecurityCapabilityStatus status, String xnfId, String nsId, VnfDescriptors vnf,
+            SCSecurity security, SCBillingSLA billingSLA) {
         this.id = id;
+        this.status = status;
+        this.xnfId = xnfId;
+        this.nsId = nsId;
         this.vnf = vnf;
         this.security = security;
         this.billingSLA = billingSLA;
-        this.integrity = integrity;
-        this.privacy = privacy;
     }
 
     public UUID getId() {
@@ -50,6 +48,30 @@ public class SecurityCapability extends PanacheMongoEntityBase {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public SecurityCapabilityStatus getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(SecurityCapabilityStatus status) {
+        this.status = status;
+    }
+
+    public String getXnfId() {
+        return this.xnfId;
+    }
+
+    public void setXnfId(String xnfId) {
+        this.xnfId = xnfId;
+    }
+
+    public String getNsId() {
+        return this.nsId;
+    }
+
+    public void setNsId(String nsId) {
+        this.nsId = nsId;
     }
 
     public VnfDescriptors getVnf() {
@@ -76,52 +98,6 @@ public class SecurityCapability extends PanacheMongoEntityBase {
         this.billingSLA = billingSLA;
     }
 
-    public SCIntegrity getIntegrity() {
-        return this.integrity;
-    }
-
-    public void setIntegrity(SCIntegrity integrity) {
-        this.integrity = integrity;
-    }
-
-    public SCPrivacy getPrivacy() {
-        return this.privacy;
-    }
-
-    public void setPrivacy(SCPrivacy privacy) {
-        this.privacy = privacy;
-    }
-
-    public SecurityCapability id(UUID id) {
-        setId(id);
-        return this;
-    }
-
-    public SecurityCapability vnf(VnfDescriptors vnf) {
-        setVnf(vnf);
-        return this;
-    }
-
-    public SecurityCapability security(SCSecurity security) {
-        setSecurity(security);
-        return this;
-    }
-
-    public SecurityCapability billingSLA(SCBillingSLA billingSLA) {
-        setBillingSLA(billingSLA);
-        return this;
-    }
-
-    public SecurityCapability integrity(SCIntegrity integrity) {
-        setIntegrity(integrity);
-        return this;
-    }
-
-    public SecurityCapability privacy(SCPrivacy privacy) {
-        setPrivacy(privacy);
-        return this;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -130,27 +106,27 @@ public class SecurityCapability extends PanacheMongoEntityBase {
             return false;
         }
         SecurityCapability securityCapability = (SecurityCapability) o;
-        return Objects.equals(id, securityCapability.id) && Objects.equals(vnf, securityCapability.vnf)
-                && Objects.equals(security, securityCapability.security)
-                && Objects.equals(billingSLA, securityCapability.billingSLA)
-                && Objects.equals(integrity, securityCapability.integrity)
-                && Objects.equals(privacy, securityCapability.privacy);
+        return Objects.equals(id, securityCapability.id) && Objects.equals(status, securityCapability.status)
+                && Objects.equals(xnfId, securityCapability.xnfId) && Objects.equals(nsId, securityCapability.nsId)
+                && Objects.equals(vnf, securityCapability.vnf) && Objects.equals(security, securityCapability.security)
+                && Objects.equals(billingSLA, securityCapability.billingSLA);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, vnf, security, billingSLA, integrity, privacy);
+        return Objects.hash(id, status, xnfId, nsId, vnf, security, billingSLA);
     }
 
     @Override
     public String toString() {
         return "{" +
                 " id='" + getId() + "'" +
+                ", status='" + getStatus() + "'" +
+                ", xnfId='" + getXnfId() + "'" +
+                ", nsId='" + getNsId() + "'" +
                 ", vnf='" + getVnf() + "'" +
                 ", security='" + getSecurity() + "'" +
                 ", billingSLA='" + getBillingSLA() + "'" +
-                ", integrity='" + getIntegrity() + "'" +
-                ", privacy='" + getPrivacy() + "'" +
                 "}";
     }
 

@@ -1,5 +1,6 @@
 package eu.palantir.catalogue.dto;
 
+import eu.palantir.catalogue.model.SecurityCapabilityStatus;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -16,6 +17,13 @@ public class SecurityCapabilityDetailsDto {
     @NotNull
     private final UUID id;
 
+    private String xnfId;
+
+    private String nsId;
+
+    @NotNull
+    private final SecurityCapabilityStatus status;
+
     @NotNull
     private final VnfDescriptorsDto vnf;
 
@@ -31,9 +39,13 @@ public class SecurityCapabilityDetailsDto {
     // @NotNull // CHANGE: Enforce it when privacy descriptors are agreed.
     private final SCPrivacyDto privacy;
 
-    public SecurityCapabilityDetailsDto(UUID id, VnfDescriptorsDto vnf, SCSecurityDto security,
-            SCBillingSLADto billingSLA, SCIntegrityDto integrity, SCPrivacyDto privacy) {
+    public SecurityCapabilityDetailsDto(UUID id, String xnfId, String nsId, SecurityCapabilityStatus status,
+            VnfDescriptorsDto vnf, SCSecurityDto security, SCBillingSLADto billingSLA, SCIntegrityDto integrity,
+            SCPrivacyDto privacy) {
         this.id = id;
+        this.xnfId = xnfId;
+        this.nsId = nsId;
+        this.status = status;
         this.vnf = vnf;
         this.security = security;
         this.billingSLA = billingSLA;
@@ -43,6 +55,26 @@ public class SecurityCapabilityDetailsDto {
 
     public UUID getId() {
         return this.id;
+    }
+
+    public String getXnfId() {
+        return this.xnfId;
+    }
+
+    public String getNsId() {
+        return this.nsId;
+    }
+
+    public void setXnfId(String xnfId) {
+        this.xnfId = xnfId;
+    }
+
+    public void setNsId(String nsId) {
+        this.nsId = nsId;
+    }
+
+    public SecurityCapabilityStatus getStatus() {
+        return this.status;
     }
 
     public VnfDescriptorsDto getVnf() {
@@ -74,6 +106,9 @@ public class SecurityCapabilityDetailsDto {
         }
         SecurityCapabilityDetailsDto securityCapabilityDetailsDto = (SecurityCapabilityDetailsDto) o;
         return Objects.equals(id, securityCapabilityDetailsDto.id)
+                && Objects.equals(xnfId, securityCapabilityDetailsDto.xnfId)
+                && Objects.equals(nsId, securityCapabilityDetailsDto.nsId)
+                && Objects.equals(status, securityCapabilityDetailsDto.status)
                 && Objects.equals(vnf, securityCapabilityDetailsDto.vnf)
                 && Objects.equals(security, securityCapabilityDetailsDto.security)
                 && Objects.equals(billingSLA, securityCapabilityDetailsDto.billingSLA)
@@ -83,7 +118,22 @@ public class SecurityCapabilityDetailsDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, vnf, security, billingSLA, integrity, privacy);
+        return Objects.hash(id, xnfId, nsId, status, vnf, security, billingSLA, integrity, privacy);
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                " id='" + getId() + "'" +
+                ", xnfId='" + getXnfId() + "'" +
+                ", nsId='" + getNsId() + "'" +
+                ", status='" + getStatus() + "'" +
+                ", vnf='" + getVnf() + "'" +
+                ", security='" + getSecurity() + "'" +
+                ", billingSLA='" + getBillingSLA() + "'" +
+                ", integrity='" + getIntegrity() + "'" +
+                ", privacy='" + getPrivacy() + "'" +
+                "}";
     }
 
 }

@@ -1,7 +1,5 @@
 package eu.palantir.catalogue.resource;
 
-import java.util.UUID;
-
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -19,14 +17,15 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
-import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationDto;
+import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
+import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationInfoDto;
 import eu.palantir.catalogue.service.SecurityCapabilityRegistrationService;
 import eu.palantir.catalogue.service.SecurityCapabilitySearchService;
 
 @Path("/api/v1/register/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "register", description = "Registration of a Security Capablitiy.")
+@Tag(name = "register", description = "Registration of a Security Capability.")
 public class RegisterSCResource {
 
     private static final Logger LOGGER = Logger.getLogger(RegisterSCResource.class);
@@ -43,12 +42,12 @@ public class RegisterSCResource {
     }
 
     @POST
-    @APIResponse(responseCode = "202", description = "SCC Registration request accepted", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationDto.class)))
+    @APIResponse(responseCode = "202", description = "SCC Registration request accepted", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationInfoDto.class)))
     @APIResponse(responseCode = "401", description = "Unauthorized for SC Registration")
     @APIResponse(responseCode = "406", description = "Invalid input data")
     @APIResponse(responseCode = "409", description = "Conflict, SC already exists")
-    @Operation(summary = "REGISTER an SC, begin creation and ONBOARDING process.")
-    public Response create(@Valid SecurityCapabilityRegistrationDto securityCapabilityDto) {
+    @Operation(summary = "REGISTER an SC, begin creation and on-boarding process.")
+    public Response register(@Valid SecurityCapabilityRegistrationRequestDto securityCapabilityDto) {
         LOGGER.infof("Received registration request for security capability %s", securityCapabilityDto);
 
         // CHANGE: Add user-based filtering
@@ -57,10 +56,9 @@ public class RegisterSCResource {
             return Response.noContent().status(Status.CONFLICT).build();
         }
 
-        UUID newSCID = registrationService.registerSC(securityCapabilityDto);
-        securityCapabilityDto.setId(newSCID);
+        final var registrationInfoDto = registrationService.register(securityCapabilityDto);
 
-        return Response.accepted(securityCapabilityDto).status(Status.ACCEPTED).build();
+        return Response.accepted(registrationInfoDto).status(Status.ACCEPTED).build();
     }
 
 }

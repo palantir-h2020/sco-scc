@@ -1,5 +1,6 @@
 package eu.palantir.catalogue.store;
 
+import eu.palantir.catalogue.model.SecurityCapabilityStatus;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +133,9 @@ public class StaticStore {
         SCPrivacyDto scPrivDefault = new SCPrivacyDto(sharesData, storesData, processesData);
 
         this.defaultSC = new SecurityCapabilityDetailsDto(
-                idDefault, vnfDefault, scSecDefault,
+                idDefault,
+                idDefault.toString(),
+                idDefault.toString(), SecurityCapabilityStatus.REGISTERED, vnfDefault, scSecDefault,
                 scBillSLADefault, scIntDefault, scPrivDefault);
         /////////////////////////////////////////////////////////////////////////////////////////////////
         UUID idOne = UUID.fromString("fc83e9a0-2ed5-4c23-b6da-62513953233b");
@@ -211,7 +214,8 @@ public class StaticStore {
         SCPrivacyDto scPrivOne = new SCPrivacyDto(sharesDataOne, storesDataOne, processesDataOne);
 
         this.scOne = new SecurityCapabilityDetailsDto(
-                idOne, vnfOne, scSecOne,
+                idOne, idOne.toString(),
+                idOne.toString(), SecurityCapabilityStatus.REGISTERED, vnfOne, scSecOne,
                 scBillSLAOne, scIntOne, scPrivOne);
         /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -291,7 +295,7 @@ public class StaticStore {
         SCPrivacyDto scPrivTwo = new SCPrivacyDto(sharesDataTwo, storesDataTwo, processesDataTwo);
 
         this.scTwo = new SecurityCapabilityDetailsDto(
-                idTwo, vnfTwo, scSecTwo,
+                idTwo, idTwo.toString(), idTwo.toString(), SecurityCapabilityStatus.REGISTERED, vnfTwo, scSecTwo,
                 scBillSLATwo, scIntTwo, scPrivTwo);
     }
 

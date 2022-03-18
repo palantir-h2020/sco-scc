@@ -27,7 +27,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
 import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
-import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationDto;
+import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.dto.SecurityCapabilitySearchDto;
 import eu.palantir.catalogue.service.SecurityCapabilityRegistrationService;
 import eu.palantir.catalogue.service.SecurityCapabilitySearchService;
@@ -64,20 +64,20 @@ public class ServicesResource {
         // CHANGE: Add user-based filtering
         // CHANGE: Add pagination
 
-        return searchService.getAll();
+        return capabilityService.getAll();
     }
 
     @GET
     @Path("{id}")
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "404", description = "Security Capability not found")
-    @Operation(summary = "GET ONE registered SC by its ID.")
-    public SecurityCapabilityDetailsDto getSingle(@PathParam("id") UUID id) {
-        LOGGER.infof("Received request for security capability with ID %s", id);
+    @APIResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = SecurityCapabilityDetailsDto.class)))
+    @APIResponse(responseCode = "404", description = "Security capability not found")
+    @Operation(summary = "Get a registered security capability by its identifier")
+    public SecurityCapabilityDetailsDto get(@PathParam("id") UUID id) {
+        LOGGER.infof("Received request to retrieve security capability with id '%s'", id);
 
         // CHANGE: Add only authentication
 
-        return capabilityService.getSCbyID(id).orElseThrow(NotFoundException::new);
+        return capabilityService.getById(id).orElseThrow(NotFoundException::new);
     }
 
     @POST
@@ -102,16 +102,16 @@ public class ServicesResource {
 
     @PATCH
     @Path("{id}")
-    @APIResponse(responseCode = "202", description = "SC update process started", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationDto.class)))
+    @APIResponse(responseCode = "202", description = "SC update process started", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationRequestDto.class)))
     @APIResponse(responseCode = "204", description = "No changes found for SC to be updated")
     @APIResponse(responseCode = "404", description = "SC not found")
     @Operation(summary = "EDIT attempt for the SC with the given ID. (Onboarding job begins if required)")
-    public Response update(@PathParam("id") UUID id, @Valid SecurityCapabilityRegistrationDto updateDto) {
+    public Response update(@PathParam("id") UUID id, @Valid SecurityCapabilityRegistrationRequestDto updateDto) {
         LOGGER.infof("Received SC update %s for ID %s", updateDto, id);
 
         // CHANGE: Add user-based filtering
 
-        SecurityCapabilityDetailsDto scDto = capabilityService.getSCbyID(id).orElseThrow(NotFoundException::new);
+        SecurityCapabilityDetailsDto scDto = capabilityService.getById(id).orElseThrow(NotFoundException::new);
 
         if (updateDto.equals(scDto)) { // CHANGE: Implement equals for different high-level-dto and low-level DTOs.
             return Response.noContent().status(Status.NO_CONTENT).build();
@@ -125,17 +125,13 @@ public class ServicesResource {
     @DELETE
     @Path("{id}")
     @APIResponse(responseCode = "204", description = "Security capability deleted")
-    @APIResponse(responseCode = "404", description = "resource not found")
-    @Operation(summary = "DELETE the SC with the given ID.")
+    @APIResponse(responseCode = "404", description = "Security capability not found")
+    @Operation(summary = "Delete a security capability using its id")
     public Response delete(@PathParam("id") UUID id) {
-
         // CHANGE: Add only authentication
 
-        capabilityService.getSCbyID(id).orElseThrow(NotFoundException::new);
-
-        // Delete, and throw 500 if it fails
-        if (!capabilityService.deleteSCbyID(id)) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+        if (!capabilityService.deleteById(id)) {
+            return Response.status(Status.NOT_FOUND).build();
         }
 
         // CHANGE: Add the call to the SO client to delete the SC.

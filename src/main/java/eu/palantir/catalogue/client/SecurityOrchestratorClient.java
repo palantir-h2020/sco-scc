@@ -1,26 +1,33 @@
 package eu.palantir.catalogue.client;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
-import javax.ws.rs.GET;
+import eu.palantir.catalogue.dto.orchestrator.IdDto;
+import eu.palantir.catalogue.dto.orchestrator.PackageFormDto;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import java.util.List;
-import java.util.Set;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-// DRAFT ONLY
-@RegisterRestClient(baseUri = "https://example.palantir.security.orchestrator/api")
+// NOTE: The security orchestrator sco-so has to be configured as a host name!
+@ApplicationScoped
+@RegisterRestClient(baseUri = "http://sco-so:50101/pkg")
 public interface SecurityOrchestratorClient {
 
-    // CHANGE: Implement during integration phase.
-    @GET
-    @Path("/extensions")
-    Set<Extension> getExtensionsById(@QueryParam("id") String id);
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/xnf")
+    IdDto onboardXnf(@MultipartForm PackageFormDto packageFormDto);
 
-    class Extension {
-        public String id;
-        public String name;
-        public String shortName;
-        public List<String> keywords;
-    }
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/ns")
+    IdDto onboardNs(@MultipartForm PackageFormDto packageFormDto);
+
 }

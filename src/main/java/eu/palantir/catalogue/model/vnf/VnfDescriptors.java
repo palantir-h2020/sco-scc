@@ -1,15 +1,13 @@
 package eu.palantir.catalogue.model.vnf;
 
+import io.quarkus.mongodb.panache.common.MongoEntity;
+
+import javax.persistence.Id;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
-
-@Entity
-public class VnfDescriptors extends PanacheMongoEntityBase {
+@MongoEntity
+public class VnfDescriptors {
 
     @Id
     private UUID id;

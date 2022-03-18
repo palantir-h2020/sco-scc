@@ -7,10 +7,14 @@ import javax.validation.constraints.NotBlank;
 public class CheckSum {
 
     @NotBlank
-    private final String algorithm;
+    private String algorithm;
 
     @NotBlank
-    private final String hash;
+    private String hash;
+
+    public CheckSum() {
+        // Required for MongoDB retrieval (AutomaticPojoCodec)
+    }
 
     public CheckSum(String algorithm, String hash) {
         this.algorithm = algorithm;

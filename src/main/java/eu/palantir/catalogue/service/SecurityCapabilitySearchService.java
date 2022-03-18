@@ -4,7 +4,7 @@ import java.util.List;
 
 import eu.palantir.catalogue.auth.CatalogueClient;
 import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
-import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationDto;
+import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.dto.SecurityCapabilitySearchDto;
 
 public interface SecurityCapabilitySearchService {
@@ -18,6 +18,6 @@ public interface SecurityCapabilitySearchService {
     List<SecurityCapabilityDetailsDto> search(SecurityCapabilitySearchDto searchDto,
             CatalogueClient client);
 
-    Boolean exists(SecurityCapabilityRegistrationDto registrationDto);
+    boolean exists(SecurityCapabilityRegistrationRequestDto registrationDto);
 
 }

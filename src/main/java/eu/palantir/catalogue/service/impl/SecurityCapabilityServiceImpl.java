@@ -1,41 +1,72 @@
 package eu.palantir.catalogue.service.impl;
 
-import java.util.Optional;
-import java.util.UUID;
+import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
+import eu.palantir.catalogue.dto.mappers.SecurityCapabilityMapper;
+import eu.palantir.catalogue.model.SecurityCapability;
+import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
+import eu.palantir.catalogue.service.SecurityCapabilityService;
+import io.quarkus.panache.common.Sort;
+
+import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
-import eu.palantir.catalogue.service.SecurityCapabilityService;
-import eu.palantir.catalogue.store.StaticStore;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 public class SecurityCapabilityServiceImpl implements SecurityCapabilityService {
+    private static final Logger LOGGER = Logger.getLogger(SecurityCapabilityServiceImpl.class);
 
-    StaticStore scStore;
+    private final SecurityCapabilityMapper mapper;
+    private final SecurityCapabilityRepository securityCapabilityRepository;
 
     @Inject
-    public SecurityCapabilityServiceImpl(StaticStore scStore) {
-        this.scStore = scStore;
+    public SecurityCapabilityServiceImpl(SecurityCapabilityMapper mapper,
+            SecurityCapabilityRepository securityCapabilityRepository) {
+        this.mapper = mapper;
+        this.securityCapabilityRepository = securityCapabilityRepository;
     }
 
     @Override
-    public Optional<SecurityCapabilityDetailsDto> getSCbyID(UUID id) {
-        // CHANGE: Implement during DB integration
-        if (id.toString().equals("fc83e9a0-2ed5-4c23-b6da-62513953233b")) {
-            return Optional.of(scStore.getSample(1));
+    public Optional<SecurityCapabilityDetailsDto> getById(UUID id) {
+        LOGGER.infof("Retrieving security capability by id '%s'", id);
+        final var securityCapability = securityCapabilityRepository.findByIdOptional(id);
+
+        if (securityCapability.isEmpty()) {
+            LOGGER.infof("Security capability with id '%s' was not found", id);
+            return Optional.empty();
         }
-        if (id.toString().equals("ee4efa39-28c6-4657-afbd-103ad588b255")) {
-            return Optional.of(scStore.getSample(2));
-        }
-        return Optional.of(scStore.getSample(3));
+
+        LOGGER.infof("Retrieved security capability %s", securityCapability.get());
+        final var securityCapabilityDetailsDto = mapper.toSecurityCapabilityDetailsDto(securityCapability.get());
+        return Optional.of(securityCapabilityDetailsDto);
     }
 
     @Override
-    public Boolean deleteSCbyID(UUID id) {
-        // CHANGE: Implement during DB integration
-        return true;
+    public boolean deleteById(UUID id) {
+        final var deleted = securityCapabilityRepository.deleteById(id);
+        if (deleted) {
+            LOGGER.infof("Deleted security capability with id '%s'", id);
+        } else {
+            LOGGER.infof("Security capability with id '%s' not found", id);
+        }
+        return deleted;
     }
 
+    @Override
+    public List<SecurityCapabilityDetailsDto> getAll() {
+        List<SecurityCapabilityDetailsDto> list = new ArrayList<SecurityCapabilityDetailsDto>();
+        final List<SecurityCapability> returned = securityCapabilityRepository.listAll();
+        if (returned == null || returned.isEmpty()) {
+            LOGGER.infof("No SCs found");
+        } else {
+            LOGGER.infof("Retrieved ALL security capabilities");
+            list = mapper.toSecurityCapabilityDetailsDtoList(returned);
+        }
+        return list;
+    }
 }

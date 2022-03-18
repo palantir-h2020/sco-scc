@@ -3,8 +3,10 @@ package eu.palantir.catalogue.dto.mappers;
 import org.mapstruct.Mapper;
 
 import eu.palantir.catalogue.dto.SecurityCapabilityDetailsDto;
-import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationDto;
+import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.model.SecurityCapability;
+
+import java.util.List;
 
 import org.mapstruct.InjectionStrategy;
 
@@ -17,7 +19,10 @@ import org.mapstruct.InjectionStrategy;
 }, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface SecurityCapabilityMapper {
 
-    SecurityCapabilityDetailsDto toSCDetailsDto(SecurityCapability securityCapability);
+    SecurityCapabilityDetailsDto toSecurityCapabilityDetailsDto(SecurityCapability securityCapability);
 
-    SecurityCapability toSecurityCapability(SecurityCapabilityRegistrationDto securityCapabilityRegistrationDto);
+    List<SecurityCapabilityDetailsDto> toSecurityCapabilityDetailsDtoList(List<SecurityCapability> securityCapability);
+
+    SecurityCapability toSecurityCapability(
+            SecurityCapabilityRegistrationRequestDto securityCapabilityRegistrationRequestDto);
 }

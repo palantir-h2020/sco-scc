@@ -8,6 +8,14 @@ This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 Note that for Docker container creation, check/use the desired dockerfile in [SCC's docker][scc-docker-dir] directory.
 
+## Prerequisites
+
+* Use .env.example to create a **.env** file.
+* **Set up the connection to the Security Orchestrator, by changing the hosts file of the OS to point to the sco-so:**
+On Linux add for example `10.101.41.168 sco-so` to the hosts file, or do an equivalent mapping to the name `sco-so`.
+
+* **Start MongoDB and MinIO.** Do `docker compose up -d` to start them up.
+
 ## Running the catalogue in dev mode
 
 You can run your catalogue in dev mode that enables live coding using:
