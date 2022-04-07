@@ -12,7 +12,7 @@ Note that for Docker container creation, check/use the desired dockerfile in [SC
 
 * Use .env.example to create a **.env** file.
 * **Set up the connection to the Security Orchestrator, by changing the hosts file of the OS to point to the sco-so:**
-On Linux add for example `10.101.41.168 sco-so` to the hosts file, or do an equivalent mapping to the name `sco-so`.
+On Linux add for example `10.101.41.168 sco-so` to the hosts file, or do an equivalent mapping to the name `sco-so`. Alternatively, the `sco-so` domain name must resolve to the appropriate host of the Security Orchestrator.
 
 * **Start MongoDB and MinIO.** Do `docker compose up -d` to start them up.
 
