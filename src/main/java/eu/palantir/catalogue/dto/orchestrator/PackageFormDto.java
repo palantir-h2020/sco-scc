@@ -1,5 +1,6 @@
 package eu.palantir.catalogue.dto.orchestrator;
 
+import java.io.InputStream;
 import java.util.Objects;
 
 import javax.ws.rs.FormParam;
@@ -9,25 +10,24 @@ import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
 public class PackageFormDto {
 
-    // CHANGE LATER INTO
-    // @PartType(MediaType.APPLICATION_OCTET_STREAM)
-    // public InputStream file;
     @FormParam("package")
-    @PartType(MediaType.TEXT_PLAIN)
-    private String packageFile;
+    @PartType(MediaType.APPLICATION_OCTET_STREAM)
+    public InputStream packageFile;
+    // @PartType(MediaType.TEXT_PLAIN)
+    // private String packageFile;
 
     public PackageFormDto() {
     }
 
-    public PackageFormDto(String packageFile) {
+    public PackageFormDto(InputStream packageFile) {
         this.packageFile = packageFile;
     }
 
-    public String getPackageFile() {
+    public InputStream getPackageFile() {
         return this.packageFile;
     }
 
-    public void setPackageFile(String packageFile) {
+    public void setPackageFile(InputStream packageFile) {
         this.packageFile = packageFile;
     }
 
