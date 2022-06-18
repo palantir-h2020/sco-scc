@@ -16,9 +16,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jobrunr.scheduling.JobScheduler;
 
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
-import eu.palantir.catalogue.dto.mappers.SecurityCapabilityMapper;
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationFormDto;
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationInfoDto;
 import eu.palantir.catalogue.service.SecurityCapabilityOnboardingService;
@@ -39,17 +39,17 @@ public class RegisterSCResource {
 
     private final SecurityCapabilityOnboardingService onboardingService;
 
-    private final SecurityCapabilityMapper securityCapabilityMapper;
+    private final JobScheduler jobScheduler;
 
     @Inject
     public RegisterSCResource(SecurityCapabilityRegistrationService registrationService,
             SecurityCapabilitySearchService searchService,
-            SecurityCapabilityMapper securityCapabilityMapper,
-            SecurityCapabilityOnboardingService onboardingService) {
+            SecurityCapabilityOnboardingService onboardingService,
+            JobScheduler jobScheduler) {
         this.registrationService = registrationService;
         this.searchService = searchService;
-        this.securityCapabilityMapper = securityCapabilityMapper;
         this.onboardingService = onboardingService;
+        this.jobScheduler = jobScheduler;
     }
 
     @POST
@@ -89,9 +89,8 @@ public class RegisterSCResource {
 
         final var registrationInfoDto = registrationService.register(securityCapabilityDto);
 
-        // ADD: ONBOARDING SERVICE
-        // CHANGE THIS: MAKE THE ONBOARDING A BACKGROUND JOB
-        final var onboardingDto = onboardingService.onboardSC(registrationForm, registrationInfoDto.getId());
+        // ONBOARDING in background
+        jobScheduler.enqueue(() -> onboardingService.onboardSC(registrationForm, registrationInfoDto.getId()));
 
         return Response.accepted(registrationInfoDto).status(Status.ACCEPTED).build();
     }

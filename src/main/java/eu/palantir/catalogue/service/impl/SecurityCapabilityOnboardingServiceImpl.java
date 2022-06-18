@@ -19,6 +19,7 @@ import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
 import eu.palantir.catalogue.service.SecurityCapabilityOnboardingService;
 
 @ApplicationScoped
+// @RegisterForReflection // for when more info about job is required
 public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabilityOnboardingService {
 
     private static final Logger LOGGER = Logger.getLogger(SecurityCapabilityOnboardingServiceImpl.class);
