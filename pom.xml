@@ -17,6 +17,9 @@
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
     <mapstruct.version>1.5.1.Final</mapstruct.version>
     <jobrunr.version>5.1.4</jobrunr.version>
+    <wiremock.version>2.33.2</wiremock.version>
+    <assertj.version>3.23.1</assertj.version>
+    <json-unit.version>2.35.0</json-unit.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -122,6 +125,9 @@
       <artifactId>quarkus-jobrunr</artifactId>
       <version>${jobrunr.version}</version>
     </dependency>
+
+    <!-- Testing -->
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -130,6 +136,34 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5-mockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit-assertj</artifactId>
+      <version>${json-unit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock-jre8</artifactId>
+      <version>${wiremock.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
