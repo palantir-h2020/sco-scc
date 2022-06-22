@@ -16,6 +16,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jobrunr.scheduling.JobScheduler;
 
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
@@ -73,12 +74,12 @@ public class RegisterSCResource {
     }
 
     @POST
-    @APIResponse(responseCode = "202", description = "SCC Registration request accepted", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationInfoDto.class)))
+    @APIResponse(responseCode = "202", description = "SCC Registration request accepted", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationFormDto.class)))
     @APIResponse(responseCode = "401", description = "Unauthorized for SC Registration")
     @APIResponse(responseCode = "406", description = "Invalid input data")
     @APIResponse(responseCode = "409", description = "Conflict, SC already exists")
     @Operation(summary = "REGISTER an SC, begin creation and on-boarding process")
-    public Response register(@Valid SecurityCapabilityRegistrationFormDto registrationForm) {
+    public Response register(@Valid @MultipartForm SecurityCapabilityRegistrationFormDto registrationForm) {
         LOGGER.infof("Received registration and onboarding request for security capability %s", registrationForm);
 
         final var securityCapabilityDto = registrationForm.getRegistrationRequest();
