@@ -1,25 +1,35 @@
 package eu.palantir.catalogue.dto;
 
+import org.jboss.logging.Logger;
+import org.jboss.resteasy.annotations.providers.multipart.PartType;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.core.MediaType;
 
 public class SecurityCapabilityRegistrationFormDto {
 
+    private static final Logger LOGGER = Logger.getLogger(SecurityCapabilityRegistrationFormDto.class);
+
     @NotNull
-    @Valid
     @FormParam("registrationData")
+    @PartType(MediaType.APPLICATION_JSON)
+    @Valid
     private final SecurityCapabilityRegistrationRequestDto registrationRequest;
 
     @NotNull
     @FormParam("xNFPackage")
+    @PartType(MediaType.APPLICATION_OCTET_STREAM)
     private final InputStream xNFPackage;
 
     @NotNull
     @FormParam("NSPackage")
+    @PartType(MediaType.APPLICATION_OCTET_STREAM)
     private final InputStream NSPackage;
 
     public SecurityCapabilityRegistrationFormDto(SecurityCapabilityRegistrationRequestDto registrationRequest,
@@ -39,6 +49,24 @@ public class SecurityCapabilityRegistrationFormDto {
 
     public InputStream getNSPackage() {
         return this.NSPackage;
+    }
+
+    public void closeStreams() {
+        if (this.xNFPackage != null)
+            try {
+                this.xNFPackage.close();
+            } catch (IOException e) {
+                LOGGER.errorf("Failed to close xNFPackage file stream!");
+                e.printStackTrace();
+            }
+
+        if (this.NSPackage != null)
+            try {
+                this.NSPackage.close();
+            } catch (IOException e) {
+                LOGGER.errorf("Failed to close NSPackage file stream!");
+                e.printStackTrace();
+            }
     }
 
     @Override
@@ -63,8 +91,10 @@ public class SecurityCapabilityRegistrationFormDto {
     public String toString() {
         return "{" +
                 " registrationRequest='" + getRegistrationRequest() + "'" +
-                ", xNFPackage='" + getXNFPackage() + "'" +
-                ", NSPackage='" + getNSPackage() + "'" +
+                ", xNFPackage='" + System.identityHashCode(
+                        getXNFPackage())
+                + "'" +
+                ", NSPackage='" + System.identityHashCode(getNSPackage()) + "'" +
                 "}";
     }
 

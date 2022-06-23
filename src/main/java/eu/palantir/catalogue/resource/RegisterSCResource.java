@@ -18,6 +18,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jobrunr.scheduling.JobScheduler;
+import org.jobrunr.jobs.JobId;
 
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationFormDto;
@@ -27,9 +28,8 @@ import eu.palantir.catalogue.service.SecurityCapabilityRegistrationService;
 import eu.palantir.catalogue.service.SecurityCapabilitySearchService;
 
 @Path("/api/v1/register/")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "register", description = "Registration of a Security Capability.")
+@Produces(MediaType.APPLICATION_JSON)
 public class RegisterSCResource {
 
     private static final Logger LOGGER = Logger.getLogger(RegisterSCResource.class);
@@ -54,6 +54,7 @@ public class RegisterSCResource {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @APIResponse(responseCode = "202", description = "SCC Registration request accepted", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationInfoDto.class)))
     @APIResponse(responseCode = "401", description = "Unauthorized for SC Registration")
     @APIResponse(responseCode = "406", description = "Invalid input data")
@@ -74,6 +75,7 @@ public class RegisterSCResource {
     }
 
     @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @APIResponse(responseCode = "202", description = "SCC Registration request accepted", content = @Content(schema = @Schema(implementation = SecurityCapabilityRegistrationFormDto.class)))
     @APIResponse(responseCode = "401", description = "Unauthorized for SC Registration")
     @APIResponse(responseCode = "406", description = "Invalid input data")
@@ -85,13 +87,17 @@ public class RegisterSCResource {
         final var securityCapabilityDto = registrationForm.getRegistrationRequest();
 
         if (searchService.exists(securityCapabilityDto)) {
+            registrationForm.closeStreams();
             return Response.noContent().status(Status.CONFLICT).build();
         }
 
         final var registrationInfoDto = registrationService.register(securityCapabilityDto);
 
-        // ONBOARDING in background
-        jobScheduler.enqueue(() -> onboardingService.onboardSC(registrationForm, registrationInfoDto.getId()));
+        // ONBOARDING IN BACKGROUND! NOTE: Meant to be done last, closes the streams!
+        final JobId onboardingJobId = jobScheduler
+                .enqueue(() -> onboardingService.onboardSC(registrationForm, registrationInfoDto.getId()));
+
+        registrationInfoDto.setOnboardingJobId(onboardingJobId.toString());
 
         return Response.accepted(registrationInfoDto).status(Status.ACCEPTED).build();
     }

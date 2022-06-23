@@ -42,6 +42,7 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
 
         if (retrievedSC.isEmpty()) {
             LOGGER.infof("Security capability with id '%s' was not found", scId);
+            registrationForm.closeStreams();
             return new SecurityCapabilityOnboardingDto();
         }
 
@@ -63,6 +64,7 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
             onboardingDto.setNsId(nsIdDto.getId().toString());
         } catch (Exception ex) {
             LOGGER.errorf("Could not onboard packages on Orchestrator, with error: %s", ex);
+            registrationForm.closeStreams();
             return onboardingDto;
         }
 
@@ -78,6 +80,7 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
             LOGGER.infof("Successfully updated SC with ID %s after onboarding", scId);
         }
 
+        registrationForm.closeStreams();
         return onboardingDto;
     }
 
