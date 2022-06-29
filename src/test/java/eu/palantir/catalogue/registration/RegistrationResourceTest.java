@@ -19,6 +19,7 @@ import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.mongodb.MongoTestResource;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jobrunr.jobs.states.StateName.SUCCEEDED;
 
+@QuarkusTestResource(MongoTestResource.class)
 @QuarkusTestResource(value = WiremockSecurityOrchestratorOnboarding.class, restrictToAnnotatedClass = true)
 @QuarkusTest
 public class RegistrationResourceTest {

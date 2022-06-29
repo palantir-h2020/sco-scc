@@ -5,7 +5,11 @@
   <artifactId>security-capabilities-catalogue</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <properties>
+    <assertj.version>3.23.1</assertj.version>
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
+    <jobrunr.version>5.1.4</jobrunr.version>
+    <json-unit.version>2.35.0</json-unit.version>
+    <mapstruct.version>1.5.1.Final</mapstruct.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
@@ -15,11 +19,7 @@
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.version>2.9.2.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
-    <mapstruct.version>1.5.1.Final</mapstruct.version>
-    <jobrunr.version>5.1.4</jobrunr.version>
     <wiremock.version>2.33.2</wiremock.version>
-    <assertj.version>3.23.1</assertj.version>
-    <json-unit.version>2.35.0</json-unit.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -125,9 +125,6 @@
       <artifactId>quarkus-jobrunr</artifactId>
       <version>${jobrunr.version}</version>
     </dependency>
-
-    <!-- Testing -->
-
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -141,6 +138,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-mockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-test-mongodb</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
