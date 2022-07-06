@@ -44,4 +44,4 @@ quarkus:
       worker-count: 10
     database:
       skip-create: false
-      type: mongodb
+      type: "mongodb"

@@ -10,10 +10,9 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import org.jboss.logging.Logger;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.jobrunr.storage.StorageProvider;
+import org.jobrunr.storage.nosql.mongo.MongoDBStorageProvider;
 import eu.palantir.catalogue.WireMockBaseUrl;
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
@@ -45,7 +44,7 @@ public class RegistrationResourceTest {
     URL wireMockServerBaseUrl;
 
     @Inject
-    StorageProvider storageProvider;
+    MongoDBStorageProvider storageProvider;
 
     @Inject
     SecurityCapabilityRepository securityCapabilityRepository;
