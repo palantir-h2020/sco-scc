@@ -50,17 +50,12 @@ public class RegistrationResourceTest {
     @Inject
     SecurityCapabilityRepository securityCapabilityRepository;
 
-    ClassLoader classLoader;
-
     /* Inject and InjectMock if needed */
-
-    @BeforeAll
-    public void prepare() {
-        this.classLoader = this.getClass().getClassLoader();
-    }
 
     @Test
     public void testRegistrationAndOnboarding() {
+
+        ClassLoader classLoader = this.getClass().getClassLoader();
 
         // Get sample files
         InputStream xNFPackageStream = classLoader.getResourceAsStream("packages/squid_vnfd.tar.gz");

@@ -1,0 +1,20 @@
+{
+    "cSpell.words": [
+        "Bson",
+        "datasource",
+        "onboarded",
+        "Quarkus",
+        "tomakehurst",
+        "vnfd"
+    ],
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.test.config": [
+        {
+            "name": "quarkusConfiguration",
+            "vmargs": [
+                "-Djava.util.logging.manager=org.jboss.logmanager.LogManager",
+                "-Dmaven.home=$MAVEN_HOME"
+            ]
+        }
+    ]
+}

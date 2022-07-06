@@ -50,7 +50,7 @@ build/
 !**/src/test/**/build/
 
 # Visual Studio Code
-.vscode
+.vscode/*
 .factorypath
 lsp
 
@@ -70,3 +70,7 @@ lsp
 
 #.directory
 .directory
+
+# Except these files
+!.gitignore
+!.vscode/settings.json

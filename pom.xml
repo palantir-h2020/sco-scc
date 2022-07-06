@@ -125,6 +125,7 @@
       <artifactId>quarkus-jobrunr</artifactId>
       <version>${jobrunr.version}</version>
     </dependency>
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
@@ -183,6 +184,10 @@
               <goal>generate-code</goal>
               <goal>generate-code-tests</goal>
             </goals>
+            <configuration>
+              <enableHttpUrlHandler>true</enableHttpUrlHandler>
+              <additionalBuildArgs>--allow-incomplete-classpath</additionalBuildArgs>
+            </configuration>
           </execution>
         </executions>
       </plugin>
