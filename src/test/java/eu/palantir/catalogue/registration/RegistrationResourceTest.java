@@ -9,12 +9,14 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import org.awaitility.Durations;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.jobrunr.storage.nosql.mongo.MongoDBStorageProvider;
 import eu.palantir.catalogue.WireMockBaseUrl;
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
+import eu.palantir.catalogue.model.job.JobStatus;
+import eu.palantir.catalogue.repository.OnboardingJobRepository;
 import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -26,7 +28,6 @@ import io.restassured.response.Response;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.jobrunr.jobs.states.StateName.SUCCEEDED;
 
 @QuarkusTestResource(MongoTestResource.class)
 @QuarkusTestResource(value = WiremockSecurityOrchestratorOnboarding.class, restrictToAnnotatedClass = true)
@@ -44,12 +45,10 @@ public class RegistrationResourceTest {
     URL wireMockServerBaseUrl;
 
     @Inject
-    MongoDBStorageProvider storageProvider;
-
-    @Inject
     SecurityCapabilityRepository securityCapabilityRepository;
 
-    /* Inject and InjectMock if needed */
+    @Inject
+    OnboardingJobRepository onboardingJobRepository;
 
     @Test
     public void testRegistrationAndOnboarding() {
@@ -102,13 +101,24 @@ public class RegistrationResourceTest {
         httpResponse.then().statusCode(202);
         assertThat(httpResponse.jsonPath().getString("status").toUpperCase()).isEqualTo("REGISTERED");
         // Retrieve onboarding background job id
-        UUID onboardingJobId = UUID.fromString(httpResponse.jsonPath().getString("onboardingJobId"));
+        String onboardingJobId = httpResponse.jsonPath().getString("onboardingJobId");
         // Retrieve mock Security Capability id
         UUID scId = UUID.fromString(httpResponse.jsonPath().getString("id"));
 
         // Await response from Security Orchestrator, via the onboarding job
-        await().atMost(10, TimeUnit.SECONDS)
-                .until(() -> storageProvider.getJobById(onboardingJobId).hasState(SUCCEEDED));
+        await().pollDelay(Durations.FIVE_SECONDS).until(() -> {
+            var onboardingJob = onboardingJobRepository.findById(onboardingJobId);
+            if (onboardingJob == null)
+                // Should exist. If it does not, there is an issue, so stop.
+                return true;
+            // Stop waiting upon error or finish.
+            JobStatus jobStatus = onboardingJob.getJobStatus();
+            return jobStatus == JobStatus.FINISHED || jobStatus == JobStatus.ERROR;
+        });
+
+        var onboardingJob = onboardingJobRepository.findById(onboardingJobId);
+        assertThat(onboardingJob).isNotNull();
+        assertThat(onboardingJob.getJobStatus()).isEqualTo(JobStatus.FINISHED);
 
         // The WireMock server will respond appropriately ONLY if the files sent through
         // the ONBOARDING background job are sent correctly. Due to the response the SC

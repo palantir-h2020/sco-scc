@@ -7,7 +7,6 @@
   <properties>
     <assertj.version>3.23.1</assertj.version>
     <compiler-plugin.version>3.10.1</compiler-plugin.version>
-    <jobrunr.version>5.1.4</jobrunr.version>
     <json-unit.version>2.35.0</json-unit.version>
     <mapstruct.version>1.5.1.Final</mapstruct.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -17,7 +16,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>2.9.2.Final</quarkus.platform.version>
+    <quarkus.platform.version>2.10.2.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
     <wiremock.version>2.33.2</wiremock.version>
   </properties>
@@ -56,6 +55,10 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -110,20 +113,15 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-metrics</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-logging-gelf</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-liquibase</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jobrunr</groupId>
-      <artifactId>quarkus-jobrunr</artifactId>
-      <version>${jobrunr.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

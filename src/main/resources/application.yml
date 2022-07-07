@@ -35,13 +35,3 @@ quarkus:
 
   swagger-ui:
     title: Security Capabilities Catalogue API
-
-  jobrunr:
-    job-scheduler:
-      enabled: true
-    background-job-server:
-      enabled: true
-      worker-count: 10
-    database:
-      skip-create: false
-      type: "mongodb"

@@ -15,34 +15,48 @@ import eu.palantir.catalogue.dto.orchestrator.IdDto;
 import eu.palantir.catalogue.dto.orchestrator.PackageFormDto;
 import eu.palantir.catalogue.model.SecurityCapability;
 import eu.palantir.catalogue.model.SecurityCapabilityStatus;
+import eu.palantir.catalogue.model.job.JobStatus;
+import eu.palantir.catalogue.model.job.OnboardingJob;
+import eu.palantir.catalogue.repository.OnboardingJobRepository;
 import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
 import eu.palantir.catalogue.service.SecurityCapabilityOnboardingService;
 
+// CHANGE: Add a scheduled job to remove onboarding jobs that are older than a week old, every end of day.
+
 @ApplicationScoped
-// @RegisterForReflection // for when more info about job is required
 public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabilityOnboardingService {
 
     private static final Logger LOGGER = Logger.getLogger(SecurityCapabilityOnboardingServiceImpl.class);
 
     private final SecurityOrchestratorClient securityOrchestratorClient;
     private final SecurityCapabilityRepository securityCapabilityRepository;
+    private final OnboardingJobRepository onboardingJobRepository;
 
     @Inject
     public SecurityCapabilityOnboardingServiceImpl(@RestClient SecurityOrchestratorClient securityOrchestratorClient,
-            SecurityCapabilityRepository securityCapabilityRepository) {
+            SecurityCapabilityRepository securityCapabilityRepository,
+            OnboardingJobRepository onboardingJobRepository) {
         this.securityOrchestratorClient = securityOrchestratorClient;
         this.securityCapabilityRepository = securityCapabilityRepository;
+        this.onboardingJobRepository = onboardingJobRepository;
     }
 
     @Override
     public SecurityCapabilityOnboardingDto onboardSC(SecurityCapabilityRegistrationFormDto registrationForm,
-            UUID scId) {
+            UUID scId, String onboardingTaskId) {
+
+        LOGGER.infof("Submitting onboarding task %s", onboardingTaskId);
+        OnboardingJob onboardingJob = new OnboardingJob(onboardingTaskId, JobStatus.ONGOING);
+        onboardingJobRepository.persist(onboardingJob);
+
         LOGGER.infof("Retrieving security capability by id '%s'", scId);
         final var retrievedSC = securityCapabilityRepository.findByIdOptional(scId);
 
         if (retrievedSC.isEmpty()) {
             LOGGER.infof("Security capability with id '%s' was not found", scId);
             registrationForm.closeStreams();
+            onboardingJob.setJobStatus(JobStatus.ERROR);
+            onboardingJobRepository.persist(onboardingJob);
             return new SecurityCapabilityOnboardingDto();
         }
 
@@ -65,6 +79,8 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
         } catch (Exception ex) {
             LOGGER.errorf("Could not onboard packages on Orchestrator, with error: %s", ex);
             registrationForm.closeStreams();
+            onboardingJob.setJobStatus(JobStatus.ERROR);
+            onboardingJobRepository.persist(onboardingJob);
             return onboardingDto;
         }
 
@@ -81,6 +97,8 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
         }
 
         registrationForm.closeStreams();
+        onboardingJob.setJobStatus(JobStatus.FINISHED);
+        onboardingJobRepository.persist(onboardingJob);
         return onboardingDto;
     }
 
