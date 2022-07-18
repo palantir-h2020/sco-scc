@@ -20,17 +20,20 @@ public class SecurityCapabilityRegistrationFormDto {
     @FormParam("registrationData")
     @PartType(MediaType.APPLICATION_JSON)
     @Valid
-    private final SecurityCapabilityRegistrationRequestDto registrationRequest;
+    private SecurityCapabilityRegistrationRequestDto registrationRequest;
 
     @NotNull
     @FormParam("xNFPackage")
     @PartType(MediaType.APPLICATION_OCTET_STREAM)
-    private final InputStream xNFPackage;
+    private InputStream xNFPackage;
 
     @NotNull
     @FormParam("NSPackage")
     @PartType(MediaType.APPLICATION_OCTET_STREAM)
-    private final InputStream NSPackage;
+    private InputStream NSPackage;
+
+    public SecurityCapabilityRegistrationFormDto() {
+    }
 
     public SecurityCapabilityRegistrationFormDto(SecurityCapabilityRegistrationRequestDto registrationRequest,
             InputStream xNFPackage, InputStream NSPackage) {
@@ -49,6 +52,18 @@ public class SecurityCapabilityRegistrationFormDto {
 
     public InputStream getNSPackage() {
         return this.NSPackage;
+    }
+
+    public void setRegistrationRequest(SecurityCapabilityRegistrationRequestDto registrationRequest) {
+        this.registrationRequest = registrationRequest;
+    }
+
+    public void setXNFPackage(InputStream xNFPackage) {
+        this.xNFPackage = xNFPackage;
+    }
+
+    public void setNSPackage(InputStream NSPackage) {
+        this.NSPackage = NSPackage;
     }
 
     public void closeStreams() {

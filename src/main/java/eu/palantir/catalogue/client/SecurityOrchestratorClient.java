@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 
 // NOTE: The security orchestrator sco-so has to be configured as a host name!
 @ApplicationScoped
-@RegisterRestClient(baseUri = "http://sco-so:50101/pkg")
+@RegisterRestClient(configKey = "sco-so-api")
 public interface SecurityOrchestratorClient {
 
     @POST

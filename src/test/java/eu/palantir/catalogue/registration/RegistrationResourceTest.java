@@ -1,18 +1,25 @@
 package eu.palantir.catalogue.registration;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import org.awaitility.Durations;
 import org.jboss.logging.Logger;
+import org.jeasy.random.EasyRandom;
+import org.jeasy.random.EasyRandomParameters;
+import org.jeasy.random.FieldPredicates;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import eu.palantir.catalogue.WireMockBaseUrl;
 import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.model.job.JobStatus;
@@ -25,8 +32,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
+import static java.nio.charset.Charset.forName;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTestResource(MongoTestResource.class)
@@ -34,12 +41,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @QuarkusTest
 public class RegistrationResourceTest {
 
-    static {
-        // SCC URI
-        RestAssured.baseURI = "http://0.0.0.0:8080/api/v1/register/";
-    }
-
     private static final Logger LOGGER = Logger.getLogger(RegistrationResourceTest.class);
+
+    // Ranges for randoms
+    private final Integer minInt = 5;
+    private final Integer maxInt = 20;
+    private final Float minFloat = (float) 1.0;
+    private final Float maxFloat = (float) 100.0;
 
     @WireMockBaseUrl
     URL wireMockServerBaseUrl;
@@ -50,25 +58,42 @@ public class RegistrationResourceTest {
     @Inject
     OnboardingJobRepository onboardingJobRepository;
 
-    @Test
-    public void testRegistrationAndOnboarding() {
+    @BeforeEach
+    void enableRestAssuredLoggingIfValidationFails() {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
 
-        ClassLoader classLoader = this.getClass().getClassLoader();
+    @Test
+    public void testRegistrationAndOnboarding() throws FileNotFoundException {
+
+        // Randomizer for Random SC input
+        EasyRandomParameters parameters = new EasyRandomParameters()
+                .randomizationDepth(10)
+                .charset(forName("UTF-8"))
+                .stringLengthRange(5, 20)
+                .collectionSizeRange(1, 5)
+                .randomize(Integer.class, () -> new Random().nextInt(maxInt) + minInt)
+                .randomize(Float.class, () -> minFloat + new Random().nextFloat() * (maxFloat - minFloat))
+                .scanClasspathForConcreteTypes(true)
+                .randomize(FieldPredicates.named("xnfId")
+                        .or(FieldPredicates.named("nsId")),
+                        () -> null);
+
+        EasyRandom generator = new EasyRandom(parameters);
 
         // Get sample files
-        InputStream xNFPackageStream = classLoader.getResourceAsStream("packages/squid_vnfd.tar.gz");
-        if (xNFPackageStream == null)
-            fail("xNFPackage file for test is not found");
+        final File xNFfile = new File("src/test/java/eu/palantir/catalogue/resources/packages/squid_vnfd.tar.gz");
+        final InputStream xNFPackageStream = new DataInputStream(new FileInputStream(xNFfile));
 
-        InputStream nsPackageStream = classLoader.getResourceAsStream("packages/squid_cnf_nsd.tar.gz");
-        if (nsPackageStream == null)
-            fail("NSPackage file for test is not found");
+        final File nsFile = new File("src/test/java/eu/palantir/catalogue/resources/packages/squid_cnf_nsd.tar.gz");
+        final InputStream nsPackageStream = new DataInputStream(new FileInputStream(nsFile));
 
         // Prepare test data
-        final var mockedSC = Mockito.mock(SecurityCapabilityRegistrationRequestDto.class);
+        final var randomSC = generator.nextObject(SecurityCapabilityRegistrationRequestDto.class);
 
         // Prepare, send request form, get response
         Response httpResponse = RestAssured.given()
+                .contentType("multipart/form-data")
                 .multiPart(
                         "xNFPackage", "squid_vnfd.tar.gz",
                         xNFPackageStream,
@@ -78,10 +103,10 @@ public class RegistrationResourceTest {
                         nsPackageStream,
                         MediaType.APPLICATION_OCTET_STREAM)
                 .multiPart("registrationData",
-                        mockedSC, MediaType.APPLICATION_JSON)
+                        randomSC, MediaType.APPLICATION_JSON)
                 .accept(ContentType.JSON)
                 .when()
-                .post();
+                .post("/api/v1/register");
 
         try {
             xNFPackageStream.close();
@@ -102,15 +127,18 @@ public class RegistrationResourceTest {
         assertThat(httpResponse.jsonPath().getString("status").toUpperCase()).isEqualTo("REGISTERED");
         // Retrieve onboarding background job id
         String onboardingJobId = httpResponse.jsonPath().getString("onboardingJobId");
+        LOGGER.infof("Will check onboarding job with id %s", onboardingJobId);
         // Retrieve mock Security Capability id
         UUID scId = UUID.fromString(httpResponse.jsonPath().getString("id"));
 
         // Await response from Security Orchestrator, via the onboarding job
         await().pollDelay(Durations.FIVE_SECONDS).until(() -> {
             var onboardingJob = onboardingJobRepository.findById(onboardingJobId);
-            if (onboardingJob == null)
+            if (onboardingJob == null) {
                 // Should exist. If it does not, there is an issue, so stop.
+                LOGGER.errorf("Could not find onboarding job with id %s", onboardingJobId);
                 return true;
+            }
             // Stop waiting upon error or finish.
             JobStatus jobStatus = onboardingJob.getJobStatus();
             return jobStatus == JobStatus.FINISHED || jobStatus == JobStatus.ERROR;

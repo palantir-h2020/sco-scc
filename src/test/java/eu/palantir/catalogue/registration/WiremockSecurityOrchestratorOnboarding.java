@@ -1,12 +1,15 @@
 package eu.palantir.catalogue.registration;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import org.jboss.logging.Logger;
-import org.mockito.Mockito;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import eu.palantir.catalogue.AbstractWireMockResource;
 import eu.palantir.catalogue.dto.orchestrator.IdDto;
@@ -25,17 +28,16 @@ public class WiremockSecurityOrchestratorOnboarding extends AbstractWireMockReso
     @Override
     public Map<String, String> start() {
 
-        ClassLoader classLoader = this.getClass().getClassLoader();
-
         // Security Orchestrator mock response.
-        final var mockXNFResponse = Mockito.mock(IdDto.class);
-        final var mockNSResponse = Mockito.mock(IdDto.class);
+        final var mockXNFResponse = new IdDto(UUID.randomUUID());
+        final var mockNSResponse = new IdDto(UUID.randomUUID());
 
         // EXPECTED FILES
         // xNF package file
-        InputStream xNFPackageStream = classLoader.getResourceAsStream("packages/squid_vnfd.tar.gz");
         byte[] expectedXNFPackage;
         try {
+            final File xNFfile = new File("src/test/java/eu/palantir/catalogue/resources/packages/squid_vnfd.tar.gz");
+            final InputStream xNFPackageStream = new DataInputStream(new FileInputStream(xNFfile));
             expectedXNFPackage = xNFPackageStream.readAllBytes();
             xNFPackageStream.close();
         } catch (IOException e) {
@@ -44,9 +46,10 @@ public class WiremockSecurityOrchestratorOnboarding extends AbstractWireMockReso
             return Collections.emptyMap();
         }
         // NS package file
-        InputStream nsPackageStream = classLoader.getResourceAsStream("packages/squid_cnf_nsd.tar.gz");
         byte[] expectedNSPackage;
         try {
+            final File nsFile = new File("src/test/java/eu/palantir/catalogue/resources/packages/squid_cnf_nsd.tar.gz");
+            final InputStream nsPackageStream = new DataInputStream(new FileInputStream(nsFile));
             expectedNSPackage = nsPackageStream.readAllBytes();
             nsPackageStream.close();
         } catch (IOException e) {
@@ -56,7 +59,7 @@ public class WiremockSecurityOrchestratorOnboarding extends AbstractWireMockReso
         }
 
         // Wiremock Server setup
-        this.wireMockServer = new WireMockServer(options().port(50101).bindAddress("10.101.41.168"));
+        this.wireMockServer = new WireMockServer(options().port(50101));
         wireMockServer.start();
 
         // Wiremock will respond correctly ONLY IF the expected file is sent!

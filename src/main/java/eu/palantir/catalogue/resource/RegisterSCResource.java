@@ -108,6 +108,7 @@ public class RegisterSCResource {
 
         final var registrationInfoDto = registrationService.register(securityCapabilityDto);
         final String onboardingTaskId = UUID.randomUUID().toString().replace("-", "");
+        registrationInfoDto.setOnboardingJobId(onboardingTaskId);
 
         // ONBOARDING IN BACKGROUND! NOTE: Meant to be done last, closes the streams,
         // handles onboarding job status!

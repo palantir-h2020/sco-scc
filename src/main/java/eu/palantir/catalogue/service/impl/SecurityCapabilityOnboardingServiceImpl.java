@@ -56,7 +56,7 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
             LOGGER.infof("Security capability with id '%s' was not found", scId);
             registrationForm.closeStreams();
             onboardingJob.setJobStatus(JobStatus.ERROR);
-            onboardingJobRepository.persist(onboardingJob);
+            onboardingJobRepository.update(onboardingJob);
             return new SecurityCapabilityOnboardingDto();
         }
 
@@ -72,15 +72,17 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
 
         try {
             xnfIdDto = securityOrchestratorClient.onboardXnf(new PackageFormDto(registrationForm.getXNFPackage()));
+            LOGGER.infof("Retrieved xNF data from orchestrator %s", xnfIdDto);
             onboardingDto.setXnfId(xnfIdDto.getId().toString());
 
             nsIdDto = securityOrchestratorClient.onboardNs(new PackageFormDto(registrationForm.getNSPackage()));
+            LOGGER.infof("Retrieved NS data from orchestrator %s", nsIdDto);
             onboardingDto.setNsId(nsIdDto.getId().toString());
         } catch (Exception ex) {
             LOGGER.errorf("Could not onboard packages on Orchestrator, with error: %s", ex);
             registrationForm.closeStreams();
             onboardingJob.setJobStatus(JobStatus.ERROR);
-            onboardingJobRepository.persist(onboardingJob);
+            onboardingJobRepository.update(onboardingJob);
             return onboardingDto;
         }
 
@@ -92,13 +94,13 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
             securityCapability.setStatus(SecurityCapabilityStatus.ONBOARDED);
             securityCapability.setNsId(onboardingDto.getNsId());
             securityCapability.setXnfId(onboardingDto.getXnfId());
-            securityCapabilityRepository.persist(securityCapability);
+            securityCapabilityRepository.update(securityCapability);
             LOGGER.infof("Successfully updated SC with ID %s after onboarding", scId);
         }
 
         registrationForm.closeStreams();
         onboardingJob.setJobStatus(JobStatus.FINISHED);
-        onboardingJobRepository.persist(onboardingJob);
+        onboardingJobRepository.update(onboardingJob);
         return onboardingDto;
     }
 

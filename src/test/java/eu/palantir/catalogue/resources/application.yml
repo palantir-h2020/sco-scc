@@ -2,10 +2,13 @@ quarkus:
   datasource:
     devservices:
       enabled: true
-  http:
-    test-port: 8080
+
   mongodb:
     devservices:
       enabled: true
       image-name: mongo:latest
       port: 27017
+
+  rest-client:
+    sco-so-api:
+      url: http://localhost:50101/pkg
