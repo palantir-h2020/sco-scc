@@ -29,6 +29,8 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
 
     private static final Logger LOGGER = Logger.getLogger(SecurityCapabilityOnboardingServiceImpl.class);
 
+    @RestClient
+    @Inject
     private final SecurityOrchestratorClient securityOrchestratorClient;
     private final SecurityCapabilityRepository securityCapabilityRepository;
     private final OnboardingJobRepository onboardingJobRepository;

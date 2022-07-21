@@ -1,5 +1,6 @@
 package eu.palantir.catalogue.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -11,51 +12,56 @@ import eu.palantir.catalogue.dto.SecurityCapabilityRegistrationRequestDto;
 import eu.palantir.catalogue.dto.SecurityCapabilitySearchDto;
 import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
 import eu.palantir.catalogue.service.SecurityCapabilitySearchService;
-import eu.palantir.catalogue.store.StaticStore;
 
 @ApplicationScoped
 public class SecurityCapabilitySearchServiceImpl implements SecurityCapabilitySearchService {
 
-    private final StaticStore scStore;
     private final SecurityCapabilityRepository securityCapabilityRepository;
 
     @Inject
-    public SecurityCapabilitySearchServiceImpl(StaticStore scStore, SecurityCapabilityRepository securityCapabilityRepository) {
-        this.scStore = scStore;
+    public SecurityCapabilitySearchServiceImpl(SecurityCapabilityRepository securityCapabilityRepository) {
         this.securityCapabilityRepository = securityCapabilityRepository;
     }
 
     @Override
     public List<SecurityCapabilityDetailsDto> getAll() {
         // CHANGE: Implement during DB integration
-        return scStore.getSamples(3);
+        // return securityCapabilityRepository.getSamples(3);
+        return new ArrayList<SecurityCapabilityDetailsDto>();
     }
 
     @Override
     public List<SecurityCapabilityDetailsDto> getAll(CatalogueClient client) {
         // CHANGE: Implement during DB integration
-        return scStore.getSamples(3);
+        // return securityCapabilityRepository.getSamples(3);
+        return new ArrayList<SecurityCapabilityDetailsDto>();
     }
 
     @Override
     public List<SecurityCapabilityDetailsDto> search(SecurityCapabilitySearchDto searchDto) {
         // CHANGE: Implement during DB integration
 
-        if (searchDto.getSecurity().getThreatProtections().get(0).getValue().equals("ddos")) {
-            return scStore.getSamples(2);
-        }
+        // if
+        // (searchDto.getSecurity().getThreatProtections().get(0).getValue().equals("ddos"))
+        // {
+        // return securityCapabilityRepository.getSamples(2);
+        // }
 
-        return scStore.getSamples(3);
+        // return securityCapabilityRepository.getSamples(3);
+        return new ArrayList<SecurityCapabilityDetailsDto>();
     }
 
     @Override
     public List<SecurityCapabilityDetailsDto> search(SecurityCapabilitySearchDto searchDto, CatalogueClient client) {
         // CHANGE: Implement during DB integration
-        if (searchDto.getSecurity().getThreatProtections().get(0).getValue().equals("ddos")) {
-            return scStore.getSamples(2);
-        }
+        // if
+        // (searchDto.getSecurity().getThreatProtections().get(0).getValue().equals("ddos"))
+        // {
+        // return securityCapabilityRepository.getSamples(2);
+        // }
 
-        return scStore.getSamples(3);
+        // return securityCapabilityRepository.getSamples(3);
+        return new ArrayList<SecurityCapabilityDetailsDto>();
     }
 
     @Override

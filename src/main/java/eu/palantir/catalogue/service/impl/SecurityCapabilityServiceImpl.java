@@ -5,7 +5,6 @@ import eu.palantir.catalogue.dto.mappers.SecurityCapabilityMapper;
 import eu.palantir.catalogue.model.SecurityCapability;
 import eu.palantir.catalogue.repository.SecurityCapabilityRepository;
 import eu.palantir.catalogue.service.SecurityCapabilityService;
-import io.quarkus.panache.common.Sort;
 
 import org.jboss.logging.Logger;
 
