@@ -31,12 +31,12 @@ public class VnfDescriptorsDto {
     @JsonProperty("product-info-description")
     private final String productInfoDescription;
 
-    @NotBlank
+    @NotNull
     @Valid
     @JsonProperty("security-group-rule")
     private final VnfSecurityGroupRuleDto securityGroupRule;
 
-    @NotBlank
+    @NotNull
     @Valid
     @JsonProperty("sw-image-desc")
     private final VnfSoftwareImageDescriptionDto softwareImageDescription;

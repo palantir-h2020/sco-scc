@@ -2,6 +2,7 @@ package eu.palantir.catalogue.dto;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import eu.palantir.catalogue.dto.billing.SCBillingSLADto;
@@ -11,12 +12,15 @@ import eu.palantir.catalogue.dto.vnf.VnfRegistrationDto;
 public class SecurityCapabilityRegistrationRequestDto {
 
     @NotNull
+    @Valid
     private final VnfRegistrationDto vnf;
 
     @NotNull
+    @Valid
     private final SCSecurityDto security;
 
     @NotNull
+    @Valid
     private final SCBillingSLADto billingSLA;
 
     // Manual registration of already-onboarded capability

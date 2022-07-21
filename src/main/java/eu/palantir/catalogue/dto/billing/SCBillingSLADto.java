@@ -3,7 +3,6 @@ package eu.palantir.catalogue.dto.billing;
 import java.util.List;
 import java.util.Objects;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 import eu.palantir.catalogue.model.billing.BillingModelType;
@@ -23,11 +22,9 @@ public class SCBillingSLADto {
     protected final Float hourlyBilling;
 
     @NotNull
-    @NotBlank
     protected final Integer slaDowntime; // Measured in minutes
 
     @NotNull
-    @NotBlank
     protected final Float slaViolationFee;
 
     public SCBillingSLADto(List<BillingModelType> billingModel, Float subscriptionBilling, Float instanceBilling,

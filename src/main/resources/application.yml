@@ -33,5 +33,21 @@ quarkus:
       properties:
         uuidRepresentation: standard
 
+  rest-client:
+    logging:
+      scope: all
+    sco-so-api:
+      url: http://sco-so:50101/pkg
+
   swagger-ui:
     title: Security Capabilities Catalogue API
+
+"%test":
+  quarkus:
+    datasource:
+      devservices:
+        enabled: true
+
+    rest-client:
+      sco-so-api:
+        url: http://localhost:50101/pkg
