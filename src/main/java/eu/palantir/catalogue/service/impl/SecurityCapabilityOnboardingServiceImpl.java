@@ -6,6 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 import org.jboss.logging.Logger;
 
 import eu.palantir.catalogue.client.SecurityOrchestratorClient;
@@ -78,8 +79,9 @@ public class SecurityCapabilityOnboardingServiceImpl implements SecurityCapabili
             nsIdDto = securityOrchestratorClient.onboardNs(new PackageFormDto(registrationForm.getNSPackage()));
             LOGGER.infof("Retrieved NS data from orchestrator %s", nsIdDto);
             onboardingDto.setNsId(nsIdDto.getId().toString());
-        } catch (Exception ex) {
-            LOGGER.errorf("Could not onboard packages on Orchestrator, with error: %s", ex);
+        } catch (ResteasyWebApplicationException ex) {
+            LOGGER.errorf("Could not onboard packages on Orchestrator, with ERROR: %s", ex);
+            ex.printStackTrace();
             registrationForm.closeStreams();
             onboardingJob.setJobStatus(JobStatus.ERROR);
             onboardingJobRepository.update(onboardingJob);

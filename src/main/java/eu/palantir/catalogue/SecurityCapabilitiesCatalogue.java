@@ -3,6 +3,8 @@ package eu.palantir.catalogue;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
 import io.quarkus.runtime.ShutdownEvent;
@@ -19,10 +21,14 @@ public class SecurityCapabilitiesCatalogue extends Application {
 
     private static final Logger LOGGER = Logger.getLogger(SecurityCapabilitiesCatalogue.class);
 
+    @ConfigProperty(name = "quarkus.rest-client.sco-so-api.url")
+    String orchestratorUrl;
+
     // Add readiness checks for DB when integrated.
     @Transactional
     void onStart(@Observes StartupEvent ev) {
         LOGGER.info("The application is starting...");
+        LOGGER.infof("SCO-SO API URL: %s", orchestratorUrl);
     }
 
     @Transactional

@@ -13,6 +13,8 @@ import org.jboss.logging.Logger;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import eu.palantir.catalogue.AbstractWireMockResource;
 import eu.palantir.catalogue.dto.orchestrator.IdDto;
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.http.Response;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -59,8 +61,10 @@ public class WiremockSecurityOrchestratorOnboarding extends AbstractWireMockReso
         }
 
         // Wiremock Server setup
-        this.wireMockServer = new WireMockServer(options().port(50101));
+        wireMockServer = new WireMockServer(options().port(50101));
         wireMockServer.start();
+
+        wireMockServer.addMockServiceRequestListener(WiremockSecurityOrchestratorOnboarding::requestReceived);
 
         // Wiremock will respond correctly ONLY IF the expected file is sent!
         wireMockServer.givenThat(post("/pkg/xnf").withMultipartRequestBody(aMultipart()
@@ -75,6 +79,14 @@ public class WiremockSecurityOrchestratorOnboarding extends AbstractWireMockReso
                 .willReturn(jsonResponse(mockNSResponse, 202)));
 
         return Collections.emptyMap();
+    }
+
+    protected static void requestReceived(Request inRequest,
+            Response inResponse) {
+        LOGGER.infof("WireMock Orchestrator request at URL: %s", inRequest.getAbsoluteUrl());
+        LOGGER.infof("WireMock Orchestrator request headers: \n%s", inRequest.getHeaders());
+        LOGGER.infof("WireMock Orchestrator response body: \n%s", inResponse.getBodyAsString());
+        LOGGER.infof("WireMock Orchestrator response headers: \n%s", inResponse.getHeaders());
     }
 
 }
